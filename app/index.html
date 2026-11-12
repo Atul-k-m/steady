@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Steady</title>
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/steady.css">
+  <script src="js/core.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="wordmark" href="index.html" aria-label="Steady, home">
+      <svg viewBox="0 0 48 24" aria-hidden="true"><rect x="1.5" y="4.5" width="45" height="15" rx="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19 4.5v15M29 4.5v15" stroke="currentColor" stroke-width="1.5" opacity=".55"/><circle cx="24" cy="12" r="4.25" fill="currentColor"/></svg>
+      Steady
+    </a>
+    <nav aria-label="Main">
+      <a href="index.html" aria-current="page">Study hub</a>
+      <a href="demo.html">Side-by-side demo</a>
+      <a href="calibrate.html">Calibrate</a>
+      <a href="facilitator.html" target="steady-facilitator">Facilitator view</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <div class="hub">
+      <section aria-labelledby="hub-title">
+        <h1 id="hub-title">The interface adjusts to your hand.</h1>
+        <p class="lede">A one-minute check measures how you point and click. Steady then makes small calendars, sliders and drag-and-drop larger, separated and forgiving.</p>
+
+        <ol class="steps">
+          <li>
+            <div>
+              <h2>Fit Steady to your hand</h2>
+              <p id="profile-line" class="profile-line">No calibration yet. Steady will use standard large settings.</p>
+              <div id="devices-wrap" hidden style="margin:0 0 16px">
+                <span class="field" id="dev-label" style="display:block;margin-bottom:6px">Device</span>
+                <div class="segmented" role="group" aria-labelledby="dev-label" id="devices"></div>
+              </div>
+              <div class="row">
+                <a class="btn primary" id="cal-btn" href="calibrate.html">Start the one-minute check</a>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h2>Choose the study condition</h2>
+              <p>Run each task under all three conditions, in the order your Latin square gives.</p>
+              <div class="segmented" role="group" aria-label="Condition" id="cond">
+                <button class="btn" type="button" data-v="original">Original</button>
+                <button class="btn" type="button" data-v="fixed">Fixed accessible</button>
+                <button class="btn" type="button" data-v="personal">Fitted to you</button>
+              </div>
+              <div class="row" style="margin-top:18px;align-items:start">
+                <label class="field">Participant
+                  <input class="text" id="pid" value="P01" size="6" autocomplete="off">
+                </label>
+                <div class="field">
+                  <span id="var-label">Task variant</span>
+                  <div class="segmented" role="group" aria-labelledby="var-label" id="variant">
+                    <button class="btn" type="button" data-v="1">A</button>
+                    <button class="btn" type="button" data-v="2">B</button>
+                    <button class="btn" type="button" data-v="3">C</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h2>Run a task</h2>
+              <p>Open the facilitator view in a second window first. It counts errors live.</p>
+              <div class="tasks">
+                <a class="task-link" id="go-book" href="book.html">
+                  <div><strong>Book an appointment</strong><span>Date, time, reminder slider, confirm</span></div>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+                <a class="task-link" id="go-week" href="week.html">
+                  <div><strong>Plan the medicine week</strong><span>Drag four medicines into time slots</span></div>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <aside class="aside" aria-labelledby="sessions-title">
+        <h2 id="sessions-title">Sessions on this computer</h2>
+        <p>Each task run is logged here, on this device only. Nothing is sent anywhere.</p>
+        <div id="sessions"></div>
+        <div class="row" style="margin-top:18px">
+          <button class="btn" type="button" id="export">Export CSV</button>
+          <button class="btn quiet" type="button" id="wipe">Delete everything</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="js/metrics.js"></script>
+  <script src="js/hub.js"></script>
+</body>
+</html>

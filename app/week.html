@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weekly planner · Pillbox</title>
+  <script src="js/hook.js"></script>
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script src="js/core.js"></script>
+  <script src="js/metrics.js"></script>
+  <script src="js/adapt.js" defer></script>
+</head>
+<body>
+  <header class="site-top"><b>Pillbox</b><a href="index.html">Back to the study hub</a></header>
+  <div class="study"><span class="cond" id="cond"></span>Task: put each medicine in its time: <strong id="want">…</strong>. Then save the plan.</div>
+
+  <main class="wrap" data-task-area>
+    <h1>Plan your medicine week</h1>
+    <p class="sub">Drag each medicine into the time of day you take it.</p>
+
+    <form id="f">
+      <div class="lbl">Unsorted</div>
+      <div class="tray" id="tray" data-name="Unsorted" data-task-step="tray"></div>
+      <div class="week" id="week"></div>
+      <p class="hint" id="err" role="alert"></p>
+      <button class="submit" type="submit">Save plan</button>
+    </form>
+    <div class="done" id="done" role="status"></div>
+  </main>
+
+  <script src="js/week.js"></script>
+</body>
+</html>

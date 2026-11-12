@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Steady · Side-by-side</title>
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/steady.css">
+  <script src="js/core.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="wordmark" href="index.html" aria-label="Steady, home">
+      <svg viewBox="0 0 48 24" aria-hidden="true"><rect x="1.5" y="4.5" width="45" height="15" rx="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19 4.5v15M29 4.5v15" stroke="currentColor" stroke-width="1.5" opacity=".55"/><circle cx="24" cy="12" r="4.25" fill="currentColor"/></svg>
+      Steady
+    </a>
+    <nav aria-label="Main">
+      <a href="index.html">Study hub</a>
+      <a href="demo.html" aria-current="page">Side-by-side demo</a>
+      <a href="calibrate.html">Calibrate</a>
+      <a href="facilitator.html" target="steady-facilitator">Facilitator view</a>
+    </nav>
+  </header>
+
+  <main class="page" style="max-width:1440px">
+    <h1>Same page. Fitted to each hand.</h1>
+    <p class="lede" style="max-width:60ch">On the left, the page as the clinic published it. On the right, the same page with Steady, sized from the hand you pick below. Both sides are fully usable.</p>
+
+    <div class="demo-controls">
+      <div class="group">
+        <span id="hand-l">Hand</span>
+        <div class="segmented" role="group" aria-labelledby="hand-l" id="hand">
+          <button class="btn" type="button" data-v="mine">Your calibration</button>
+          <button class="btn" type="button" data-v="precise">Precise</button>
+          <button class="btn" type="button" data-v="moderate">Moderate tremor</button>
+          <button class="btn" type="button" data-v="strong">Strong tremor</button>
+        </div>
+      </div>
+      <div class="row" style="align-items:start;gap:28px">
+        <div class="group">
+          <span id="task-l">Task</span>
+          <div class="segmented" role="group" aria-labelledby="task-l" id="task">
+            <button class="btn" type="button" data-v="book">Book an appointment</button>
+            <button class="btn" type="button" data-v="week">Plan the medicine week</button>
+          </div>
+        </div>
+        <div class="group">
+          <span id="cmp-l">Left side shows</span>
+          <div class="segmented" role="group" aria-labelledby="cmp-l" id="cmp">
+            <button class="btn" type="button" data-v="original">Original</button>
+            <button class="btn" type="button" data-v="fixed">Fixed accessible</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="note" id="note"></p>
+    <ul class="chips" id="chips" aria-label="Settings on the right"></ul>
+    <ul class="reasons" id="reasons" style="margin-top:14px"></ul>
+
+    <div class="frames">
+      <figure>
+        <figcaption><h2 id="left-h">Original page</h2><span id="left-s">As published</span></figcaption>
+        <iframe id="left" title="Left: comparison page"></iframe>
+      </figure>
+      <figure>
+        <figcaption><h2>With Steady</h2><span id="right-s"></span></figcaption>
+        <iframe id="right" title="Right: the same page with Steady"></iframe>
+      </figure>
+    </div>
+  </main>
+
+  <script src="js/demo.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+/* Self-hosted typefaces (SIL Open Font License 1.1, see ../fonts/OFL-*.txt).
+ * Served from this folder so no page makes a request to a third party and the demo works offline.
+ * Latin subset only; other scripts fall back to the system font named in each stack. */
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("../fonts/atkinson-hyperlegible-next.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible Mono";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("../fonts/atkinson-hyperlegible-mono.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Literata";
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url("../fonts/literata.woff2") format("woff2");
+}

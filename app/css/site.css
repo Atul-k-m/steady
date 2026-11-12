@@ -1,0 +1,35 @@
+/* "Ordinary website" look for the two host pages. Deliberately typical of the web STEADY must cope with:
+ * small controls, tight spacing, system font. STEADY's own UI arrives on top via adapt.js. */
+:root { --brand: #2B5797; --ink: #222; --muted: #5d6470; --line: #d6dbe3; --bg: #f4f6f9; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+.site-top { background: var(--brand); color: #fff; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; }
+.site-top b { font-size: 16px; letter-spacing: .01em; }
+.site-top a { color: #fff; font-size: 13px; }
+.study { background: #FFF8E1; border-bottom: 1px solid #F0D98C; padding: 10px 24px; font-size: 15px; }
+.study strong { font-weight: 700; }
+.study .cond { float: right; font-size: 13px; color: var(--muted); }
+.wrap { max-width: 760px; margin: 24px auto 220px; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 22px 26px; }
+h1 { font-size: 20px; margin: 0 0 4px; }
+.sub { color: var(--muted); margin: 0 0 18px; }
+.fieldset { border: 0; padding: 0; margin: 0 0 18px; }
+.fieldset > legend, .lbl { display: block; font-weight: 600; margin-bottom: 6px; }
+input[type="date"] { font: inherit; padding: 3px 6px; border: 1px solid #aab2bf; border-radius: 3px; }
+.slots { display: flex; flex-wrap: wrap; gap: 4px; }
+.slot { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border: 1px solid #aab2bf; border-radius: 3px; cursor: pointer; font-size: 13px; background: #fff; }
+.slot:has(input:checked) { background: #e7eef9; border-color: var(--brand); }
+.slot input { margin: 0; }
+input[type="range"] { width: 260px; vertical-align: middle; }
+.range-out { display: inline-block; min-width: 70px; color: var(--muted); }
+.submit { background: var(--brand); color: #fff; border: 0; border-radius: 3px; padding: 6px 14px; font: 600 13px/1.2 inherit; font-family: inherit; cursor: pointer; }
+.done { display: none; padding: 14px; border-radius: 4px; background: #e8f5e9; border: 1px solid #a5d6a7; margin-top: 14px; }
+.done.show { display: block; }
+.tray, .slotbox { min-height: 70px; border: 1px dashed #aab2bf; border-radius: 4px; padding: 6px; display: flex; flex-wrap: wrap; gap: 4px; align-content: flex-start; }
+.tray { background: #fafbfc; margin-bottom: 14px; }
+.week { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+.week h3 { margin: 0 0 4px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.slotbox.over { background: #e7eef9; }
+.med { padding: 4px 8px; background: #fff; border: 1px solid #aab2bf; border-radius: 3px; font-size: 13px; cursor: grab; }
+.med[data-ok="1"] { border-color: #6aa36f; }
+.hint { color: var(--muted); font-size: 12px; }
+@media (max-width: 640px) { .week { grid-template-columns: repeat(2, 1fr); } }

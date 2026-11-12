@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book a follow-up · Riverside Clinic</title>
+  <script src="js/hook.js"></script>
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script src="js/core.js"></script>
+  <script src="js/metrics.js"></script>
+  <script src="js/adapt.js" defer></script>
+</head>
+<body>
+  <header class="site-top"><b>Riverside Clinic</b><a href="index.html">Back to the study hub</a></header>
+  <div class="study"><span class="cond" id="cond"></span>Task: book a follow-up on <strong id="want-date">…</strong> at <strong id="want-time">…</strong>, with a reminder <strong id="want-rem">…</strong> before.</div>
+
+  <main class="wrap" data-task-area>
+    <h1>Book a follow-up appointment</h1>
+    <p class="sub">Neurology outpatients · 30-minute review</p>
+
+    <form id="f" novalidate>
+      <div class="fieldset" data-task-step="date">
+        <label class="lbl" for="date">Date</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+
+      <fieldset class="fieldset" data-task-step="time">
+        <legend>Time</legend>
+        <div class="slots" id="slots"></div>
+      </fieldset>
+
+      <div class="fieldset" data-task-step="reminder">
+        <label class="lbl" for="rem">Remind me before the appointment</label>
+        <input type="range" id="rem" name="reminder" min="0" max="120" step="5" value="60" data-unit="min" data-steady-presets="15,30,60,120">
+        <span class="range-out" id="remOut">60 min</span>
+      </div>
+
+      <p class="hint" id="err" role="alert"></p>
+      <button class="submit" type="submit">Book appointment</button>
+    </form>
+    <div class="done" id="done" role="status"></div>
+  </main>
+
+  <script src="js/book.js"></script>
+</body>
+</html>
