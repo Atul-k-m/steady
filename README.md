@@ -1,6 +1,6 @@
 # Steady: government health forms, steadied for older hands and eyes
 
-**Live demo:** https://steady-helper-alpha.vercel.app · **Practice portal:** https://steady-helper-alpha.vercel.app/portal/
+**Live demo:** https://steady-helper-phi.vercel.app · **Practice portal:** https://steady-helper-phi.vercel.app/portal/
 
 Steady is a free Chrome helper that guides older people, first of all people living with Parkinson’s, through government health forms. Each step appears in large text, read aloud in Hindi or English. The helper does the safe steps after a yes, and the private steps stay with the person.
 
@@ -47,9 +47,9 @@ The panel footer says which "brain" is active: verified steps, the AI planner, o
 
 ## Try it
 
-1. Open the [live site](https://steady-helper-alpha.vercel.app) and do the one-minute check.
-2. Install the helper: download the zip from the [install page](https://steady-helper-alpha.vercel.app/get.html), unzip it, then go to `chrome://extensions`, turn on Developer mode and click **Load unpacked**. In a clone of this repo you can load the `app/` folder directly.
-3. Open the [practice portal](https://steady-helper-alpha.vercel.app/portal/). The helper panel opens on the right. On any other website, click the Steady icon.
+1. Open the [live site](https://steady-helper-phi.vercel.app) and do the one-minute check.
+2. Install the helper: download the zip from the [install page](https://steady-helper-phi.vercel.app/get.html), unzip it, then go to `chrome://extensions`, turn on Developer mode and click **Load unpacked**. In a clone of this repo you can load the `app/` folder directly.
+3. Open the [practice portal](https://steady-helper-phi.vercel.app/portal/). The helper panel opens on the right. On any other website, click the Steady icon.
 
 ### Run locally
 

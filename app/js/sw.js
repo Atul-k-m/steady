@@ -15,7 +15,7 @@ const MODEL = 'claude-opus-5-5';
 // Toolbar button: on ANY website, it brings up the helper for that tab (activeTab: access to this tab only, and only
 // after the click; nothing runs on other sites). On pages where extensions can't run (new tab, chrome://), it opens
 // the practice portal instead.
-const PORTAL_URL = 'https://steady-helper-alpha.vercel.app/portal/index.html'; // the live practice portal (localhost:8080 also works)
+const PORTAL_URL = 'https://steady-helper-phi.vercel.app/portal/index.html'; // the live practice portal (localhost:8080 also works)
 async function attach(tabId) {
   const target = { tabId };
   await chrome.scripting.executeScript({ target, files: ['js/core.js', 'js/bridge.js'] });                 // settings, never the profile

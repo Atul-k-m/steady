@@ -119,6 +119,81 @@ test('strings exist in both languages and substitute variables', () => {
   assert.match(A.t('otpBodyHelper', 'hi', { name: 'राहुल', end: '4321' }), /4321.*राहुल/);
 });
 
+// Bugs found on bescom.co.in (2026-11-16): "Account No." was read as "Account no", Hindi text went to an English voice
+// (random words), there was no Kannada, and nothing could say what a box means.
+test('speech: labels are said the way a person says them', () => {
+  assert.equal(A.speakable('Account No.', 'en'), 'Account number');
+  assert.match(A.speakable('Type: Account No.', 'en'), /Type: Account number/);
+  assert.match(A.speakable('Mobile No:', 'en'), /Mobile number/);
+  assert.match(A.speakable('RR No', 'en'), /R R number/);
+  assert.match(A.speakable('A/c No. 12', 'en'), /account number 12/i);
+  assert.match(A.speakable('Enter OTP', 'en'), /O T P/);
+  assert.match(A.speakable('Amount (Rs.)', 'en'), /rupees/);
+  assert.match(A.speakable('DOB *', 'en'), /date of birth/);
+  assert.equal(A.speakable('No, thanks', 'en'), 'No, thanks', 'a plain "No" stays "No"');
+  assert.equal(A.speakable('Say No', 'en'), 'Say No');
+});
+
+test('voices: the right language or none, never Hindi or Kannada in an English voice', () => {
+  const pc = [{ name: 'Microsoft Ravi - English (India)', lang: 'en-IN' }, { name: 'Microsoft Zira - English (United States)', lang: 'en-US' }];
+  assert.equal(A.pickVoice(pc, 'hi'), null);
+  assert.equal(A.pickVoice(pc, 'kn'), null);
+  assert.equal(A.pickVoice(pc, 'en').lang, 'en-IN', 'Indian English first');
+  const edge = [...pc, { name: 'Microsoft Sapna Online (Natural) - Kannada (India)', lang: 'kn-IN' }, { name: 'Microsoft Swara Online (Natural) - Hindi (India)', lang: 'hi-IN' }, { name: 'Microsoft Neerja Online (Natural) - English (India)', lang: 'en-IN' }];
+  assert.match(A.pickVoice(edge, 'kn').name, /Sapna/);
+  assert.match(A.pickVoice(edge, 'hi').name, /Swara/);
+  assert.match(A.pickVoice(edge, 'en').name, /Neerja/, 'natural voices before robotic ones');
+  assert.equal(A.pickVoice([{ name: 'Google हिन्दी', lang: 'hi_IN' }], 'hi').name, 'Google हिन्दी', 'underscore tags (Android) count');
+});
+
+test('Kannada: every string exists, and the language button cycles English → Hindi → Kannada', () => {
+  for (const k of Object.keys(A.STR.en)) assert.ok(A.STR.kn[k], `missing Kannada for ${k}`);
+  for (const k of Object.keys(A.STR.en)) assert.ok(A.STR.hi[k], `missing Hindi for ${k}`);
+  assert.deepEqual(A.LANGS, ['en', 'hi', 'kn']);
+  assert.equal(A.nextLang('en'), 'hi');
+  assert.equal(A.nextLang('hi'), 'kn');
+  assert.equal(A.nextLang('kn'), 'en');
+  assert.equal(A.LANG_LABEL.kn, 'ಕನ್ನಡ');
+});
+
+test('son persona: common boxes are explained in plain words, in all three languages', () => {
+  const e = A.explainField({ label: 'Account ID', placeholder: 'Account No.', host: 'www.bescom.co.in' }, 'en');
+  assert.equal(e.known, true);
+  assert.equal(e.id, 'account');
+  assert.equal(e.name, 'Account number');
+  assert.match(e.explain, /bill/i, 'says where to find it');
+  assert.match(e.explain, /created|set up/i, 'says where the number comes from');
+  assert.match(e.explain, /1912/, 'BESCOM pages add BESCOM’s own helpline');
+  const other = A.explainField({ label: 'Consumer No.' }, 'en');
+  assert.equal(other.id, 'account');
+  assert.doesNotMatch(other.explain, /BESCOM|1912/, 'no BESCOM hint on other sites');
+  for (const L of ['hi', 'kn']) {
+    const x = A.explainField({ label: 'Account ID', host: 'www.bescom.co.in' }, L);
+    assert.ok(x.explain && x.explain !== e.explain, `${L} explanation is translated`);
+    assert.match(x.explain, /1912/);
+  }
+  assert.equal(A.explainField({ id: 'cpatchaInput', placeholder: 'Enter Image Captcha here' }, 'en').id, 'captcha');
+  assert.equal(A.explainField({ label: 'Mobile No.' }, 'en').id, 'mobile');
+  assert.equal(A.explainField({ label: 'PIN code' }, 'en').id, 'pincode');
+  assert.equal(A.explainField({ label: 'UPI PIN' }, 'en').id, 'secret', 'a PIN that is a password is a secret, not a PIN code');
+  const unknown = A.explainField({ label: 'Favourite colour' }, 'kn');
+  assert.equal(unknown.known, false);
+  assert.ok(unknown.explain);
+  for (const g of A.GLOSSARY) for (const L of A.LANGS) {
+    assert.ok(g.name[L], `${g.id}: name in ${L}`);
+    assert.ok(g.explain[L], `${g.id}: explanation in ${L}`);
+  }
+});
+
+test('captcha keypad has every letter and digit a real captcha can use', () => {
+  const bescom = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'; // BESCOM's createCaptcha() alphabet
+  for (const ch of bescom) assert.ok(A.CAPTCHA_KEYS.includes(ch), `missing key ${ch}`);
+  assert.ok(A.isRefreshControl({ text: 'loop' }), 'Material "loop" icon (BESCOM)');
+  assert.ok(A.isRefreshControl({ text: '', onclick: 'createCaptcha()' }));
+  assert.ok(A.isRefreshControl({ text: 'Refresh' }));
+  assert.equal(A.isRefreshControl({ text: 'Please Click Here' }), false);
+});
+
 test('flow map: every step is defined, private steps are human kinds, and no click targets a final action', () => {
   for (const step of FM.order) assert.ok(FM.steps[step], `step ${step}`);
   const humanKinds = new Set(['captcha', 'otp', 'consent', 'review', 'photo']);

@@ -582,7 +582,7 @@
   var b = document.getElementById('mock-banner');
   if (!b) return;
   var a = document.createElement('a');
-  a.href = 'https://steady-helper-alpha.vercel.app/portal/index.html';
+  a.href = 'https://steady-helper-phi.vercel.app/portal/index.html';
   a.textContent = 'Open the live practice portal to get the helper';
   a.style.cssText = 'margin-left:8px;font-weight:700;color:#7A1606';
   b.appendChild(document.createTextNode(' The Steady helper cannot run on this copy.'));

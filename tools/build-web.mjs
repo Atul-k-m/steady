@@ -12,7 +12,7 @@ const APP = join(ROOT, 'app');
 const OUT = join(ROOT, 'dist', 'web');
 const EXTENSION_ONLY = new Set(['manifest.json', 'js/bridge.js', 'js/sw.js', 'js/site-bridge.js', 'options.html', 'js/options.js']);
 // The public origin, used in canonical URLs, Open Graph images, sitemap.xml, robots.txt and llms.txt (token __SITE__).
-const SITE = (process.env.SITE_URL || 'https://steady-helper-alpha.vercel.app').replace(/\/$/, '');
+const SITE = (process.env.SITE_URL || 'https://steady-helper-phi.vercel.app').replace(/\/$/, '');
 
 // Keep in step with the <meta http-equiv="Content-Security-Policy"> in each page. Headers add frame-ancestors,
 // which a meta tag cannot set. 'self' framing is needed by demo.html, which shows book.html / week.html side by side.

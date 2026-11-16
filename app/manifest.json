@@ -24,30 +24,30 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://localhost/*", "http://127.0.0.1/*", "https://steady-helper-alpha.vercel.app/*"],
-      "exclude_matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-alpha.vercel.app/portal/*"],
+      "matches": ["http://localhost/*", "http://127.0.0.1/*", "https://steady-helper-phi.vercel.app/*"],
+      "exclude_matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-phi.vercel.app/portal/*"],
       "js": ["js/site-bridge.js"],
       "run_at": "document_start"
     },
     {
-      "matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-alpha.vercel.app/portal/*"],
+      "matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-phi.vercel.app/portal/*"],
       "js": ["js/hook.js"],
       "run_at": "document_start",
       "world": "MAIN"
     },
     {
-      "matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-alpha.vercel.app/portal/*"],
+      "matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-phi.vercel.app/portal/*"],
       "js": ["js/core.js", "js/bridge.js"],
       "run_at": "document_start"
     },
     {
-      "matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-alpha.vercel.app/portal/*"],
+      "matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-phi.vercel.app/portal/*"],
       "js": ["js/core.js", "js/adapt.js"],
       "run_at": "document_idle",
       "world": "MAIN"
     },
     {
-      "matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-alpha.vercel.app/portal/*"],
+      "matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-phi.vercel.app/portal/*"],
       "js": ["js/core.js", "js/agent-core.js", "js/flowmap-portal.js", "js/model-struggle.js", "js/agent.js"],
       "run_at": "document_idle"
     }
