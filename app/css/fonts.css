@@ -22,3 +22,10 @@
   font-display: swap;
   src: url("../fonts/literata.woff2") format("woff2");
 }
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("../fonts/onest.woff2") format("woff2");
+}

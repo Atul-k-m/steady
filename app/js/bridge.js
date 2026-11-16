@@ -7,6 +7,7 @@
   const de = document.documentElement;
   const K = S.KEYS;
   de.dataset.steadyExt = '1'; // tells core.js on the page: don't write to this site's storage
+  de.dataset.steadyAgent = '1'; // this bridge runs only on supported portals, where the helper agent provides the panel
 
   function push(all) {
     let profile = null;

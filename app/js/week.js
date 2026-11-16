@@ -67,7 +67,7 @@
     err.textContent = '';
     const ok = MEDS.every((m) => document.getElementById(m.id).parentElement.dataset.slot === want[m.id]);
     const done = document.getElementById('done');
-    done.innerHTML = `<strong>Plan saved.</strong> ${form.dataset.steadySummary}. <a href="index.html">Back to the study hub</a>`;
+    done.innerHTML = `<strong>Plan saved.</strong> ${form.dataset.steadySummary}. <a href="hub.html">Back to the study hub</a>`;
     done.classList.add('show');
     form.querySelector('.submit').disabled = true;
     S.metrics.end({ completed: ok, meta: { finalCorrect: ok } });

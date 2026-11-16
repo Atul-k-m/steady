@@ -10,7 +10,7 @@
   try { chan = new BroadcastChannel('steady-live'); } catch (e) { /* file:// in some browsers */ }
 
   let session = null, seq = 0;
-  const INTERACTIVE = 'button, a[href], input, label, select, textarea, [role="button"], [draggable="true"], [data-steady-drop], .steady-ui';
+  const INTERACTIVE = 'button, a[href], input, label, select, textarea, [role="button"], [draggable="true"], [data-steady-drop], [ondrop], .steady-ui';
 
   function all() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } }
   function persist() {
@@ -72,12 +72,18 @@
     if (!el) { log('miss', t.closest('[data-task-step]')?.dataset.taskStep || 'page'); down = null; return; }
     down = { el, x: e.clientX, y: e.clientY };
   }, true);
+  // A slip is a release off the pressed control, including into the gap around it (the container). Releasing on the
+  // label that wraps a pressed input is not a slip: the label passes the click on. The slip guard rescues a slip only
+  // when the pointer moved at most one target width; a longer move cancels, as in adapt.js.
   document.addEventListener('pointerup', (e) => {
     if (!down || !session) return;
     const t = e.composedPath()[0];
-    if (t instanceof Element && !down.el.contains(t) && !t.contains(down.el)) {
-      if (window.__steadySlipGuard) log('slip_rescued', down.el.id || down.el.textContent.trim().slice(0, 24));
-      else log('slip', down.el.id || down.el.textContent.trim().slice(0, 24));
+    const upEl = t instanceof Element ? t.closest(INTERACTIVE) : null;
+    const passedOn = upEl && upEl.tagName === 'LABEL' && upEl.contains(down.el);
+    if (t instanceof Element && !down.el.contains(t) && !passedOn) {
+      const s = window.__steadySettings;
+      const rescued = window.__steadySlipGuard && s && Math.hypot(e.clientX - down.x, e.clientY - down.y) <= s.target;
+      log(rescued ? 'slip_rescued' : 'slip', down.el.id || down.el.textContent.trim().slice(0, 24));
     }
     down = null;
   }, true);

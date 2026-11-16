@@ -11,8 +11,8 @@
 | interactive-examples.mdn.mozilla.net — input-date | 1 date input | ✅ 14 day buttons; a click set the real value (2018-07-24) |
 | interactive-examples.mdn.mozilla.net — input-range | 2 range sliders | ✅ 2 steppers; "+" moved the real slider 6 → 7 |
 | jqueryui.com/datepicker/ | Custom jQuery UI calendar | ❌ Not adapted. Custom widgets need an adapter (MVP 4 backlog) |
-| w3schools.com/html/html5_draganddrop.asp | 2 draggables, 4 inline `ondrop=` zones | ❌ **Regression: Steady made it worse.** Native drag was switched off, but no drop zones were found, because our hook only sees `addEventListener`. Fix sent to the engine owner: also match `[ondrop]`, and never switch off native drag when no zones are found |
+| w3schools.com/html/html5_draganddrop.asp | 2 draggables, 4 inline `ondrop=` zones | ✅ **Fixed (re-run, 12 Nov 2026).** First run was a regression: native drag was switched off but no zones were found, because the hook only saw `addEventListener`. The engine now also matches `[ondrop]` and the `el.ondrop` setter, and leaves native drag alone when no zones are found. Re-run: 2 zones offered; pick, then place moved `#img1` from `#div1` to `#div2` |
 
-**Score:** 4 of 6 working, 1 unsupported, 1 broken by us. Fix pending.
+**Score:** 5 of 6 working, 1 unsupported (custom jQuery UI calendar).
 
 **What this does not show:** whether this helps people with tremor. That needs the user pilot (plan.md, Stage 1). It also covers only 6 pages, chosen because they use native controls, so it is not a sample of "the web".

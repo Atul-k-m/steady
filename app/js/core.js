@@ -11,7 +11,7 @@
   const LEVELS = [44, 56, 72, 96, 120];          // px; 44 = WCAG 2.5.5 AAA floor
   const PRIOR = { sigma: 6, weight: 4, slipP90: 2 }; // population prior (literature-informed, (A))
   const Z_AXIS = 2.24;                             // per-axis z → ~95% joint 2-D hit
-  const MODEL_ID = 'policy-tree@0.1.0';
+  const MODEL_ID = 'policy-tree@0.2.0';
 
   /* ---------- small stats ---------- */
   const sum = (a) => a.reduce((s, v) => s + v, 0);
@@ -113,10 +113,27 @@
     if (!d || !d.attempts) return {};
     return { dragFailRate: round1((d.failures / d.attempts) * 100) / 100, dragMs: Math.round(d.ms || 0) };
   }
-  const STEPS = [['tap', 'Tap the dots'], ['hold', 'Hold steady'], ['move', 'Move it']];
+  /* ---------- features: reading (smallest text read correctly) ----------
+   * trials: [{ px, correct }]. The threshold is the smallest size answered correctly more often than not.
+   * Comfortable reading needs headroom above that threshold (the "acuity reserve" in low-vision research),
+   * so the recommended text size is 2x the threshold, clamped to 18-40 px. Both numbers are our assumption (A). */
+  function readingFeatures(trials) {
+    if (!trials || !trials.length) return {};
+    const sizes = [...new Set(trials.map((t) => t.px))].sort((a, b) => a - b);
+    let thr = null;
+    for (const px of sizes) {
+      const at = trials.filter((t) => t.px === px), ok = at.filter((t) => t.correct).length;
+      if (ok > at.length - ok) { thr = px; break; }
+    }
+    return { readPx: thr == null ? Math.round(sizes[sizes.length - 1] * 1.25) : thr, readTrials: trials.length };
+  }
+  const textFor = (readPx) => (readPx ? Math.min(40, Math.max(18, Math.round(readPx * 2))) : 20);
+
+  // Steps of the one-minute check. "Move it" (drag) is still measured by older pages but is no longer part of the check.
+  const STEPS = [['tap', 'Tap the dots'], ['hold', 'Hold steady'], ['read', 'Read it']];
   function measuredSteps(features) {
     const f = features || {};
-    return { tap: f.trials > 0, hold: 'tremorRms' in f, move: 'dragFailRate' in f };
+    return { tap: f.trials > 0, hold: 'tremorRms' in f, read: 'readPx' in f, move: 'dragFailRate' in f };
   }
 
   /* ---------- policy: a decision tree stored as JSON (replaceable by a trained export) ---------- */
@@ -129,6 +146,8 @@
       dateMode: { if: ['target', '>=', 56], then: 'list', else: { if: ['sigma', '>', 6], then: 'list', else: 'native' } },
       sliderMode: { if: ['tremorRms', '>', 1.5], then: 'stepper', else: { if: ['sigma', '>', 6], then: 'stepper', else: 'native' } },
       confirmFinal: { if: ['repeatRate', '>', 0], then: true, else: { if: ['slipP90', '>', 8], then: true, else: { if: ['target', '>=', 72], then: true, else: false } } },
+      // How much the agent offers to do at the start. It can change during a task (struggle detector), always after a yes.
+      autonomy: { if: ['target', '>=', 96], then: 'copilot', else: { if: ['tremorRms', '>', 2], then: 'copilot', else: { if: ['readPx', '>=', 16], then: 'copilot', else: 'assist' } } },
     },
   };
 
@@ -163,19 +182,22 @@
     const target = o.steadier ? nextLevel(baseTarget) : baseTarget;
     const gap = baseGap + (o.steadier ? 4 : 0);
     const ctx = Object.assign({}, f, { target });
-    const suggested = { target, gap };
+    const suggestedText = textFor(f.readPx);
+    const text = (ov.text || suggestedText) + (o.steadier ? 4 : 0);
+    const suggested = { target, gap, text };
     for (const key of Object.keys(POLICY.outputs)) suggested[key] = evalNode(POLICY.outputs[key], ctx);
     const settings = Object.assign({}, suggested);
     for (const key of Object.keys(POLICY.outputs)) if (key in ov) settings[key] = ov[key];
     if (o.steadier) Object.assign(settings, STEADIER_ON);
-    const why = reasons(f, settings, { ov, steadier: !!o.steadier, suggestedTarget, suggested, measured: measuredSteps(features) });
-    return { settings, suggested, suggestedTarget, suggestedGap, rawTarget: raw, level: LEVELS.indexOf(settings.target) + 1, reasons: why.byKey, explain: why.summary };
+    if (o.steadier && settings.autonomy === 'assist') settings.autonomy = 'copilot';
+    const why = reasons(f, settings, { ov, steadier: !!o.steadier, suggestedTarget, suggestedText, suggested, measured: measuredSteps(features) });
+    return { settings, suggested, suggestedTarget, suggestedGap, suggestedText, rawTarget: raw, level: LEVELS.indexOf(settings.target) + 1, reasons: why.byKey, explain: why.summary };
   }
 
-  const isOn = (k, v) => (k === 'ignoreRepeatMs' ? v > 0 : v === true || v === 'pick' || v === 'list' || v === 'stepper');
+  const isOn = (k, v) => (k === 'ignoreRepeatMs' ? v > 0 : v === true || v === 'pick' || v === 'list' || v === 'stepper' || v === 'copilot' || v === 'autopilot');
 
   // One plain reason per setting (on or off), plus a short summary list for the result page.
-  function reasons(f, s, { ov, steadier, suggestedTarget, suggested, measured }) {
+  function reasons(f, s, { ov, steadier, suggestedTarget, suggestedText, suggested, measured }) {
     const px = (v) => `${Math.round(v)} px`;
     const by = {};
     by.target = ov.target ? `You chose ${s.target} px buttons. The check suggested ${suggestedTarget} px.`
@@ -185,6 +207,10 @@
     by.gap = ov.gap ? `You chose ${s.gap} px gaps.`
       : measured.tap ? `Gaps are ${s.gap} px, about one typical miss, so a near-miss lands in the gap and does nothing.`
       : `Gaps use the standard ${s.gap} px.`;
+    by.text = ov.text ? `You chose ${s.text} px text. The check suggested ${suggestedText} px.`
+      : measured.read ? `You read text down to about ${Math.round(f.readPx)} px, so text is ${s.text} px: twice that, so reading stays comfortable.`
+      : `Text uses the standard ${s.text} px, because reading was not measured.`;
+    if (steadier && !ov.text) by.text += ' “Steadier today” adds 4 px.';
     const auto = {
       slipGuard: [`Your pointer moves about ${px(f.slipP90)} while the button goes down, so a click counts where you pressed, not where you let go.`,
         measured.tap ? 'Your pointer stays put while the button goes down, so clicks work as usual.' : 'Off, because slipping was not measured.'],
@@ -198,6 +224,8 @@
         measured.hold ? 'Your hand held still, so sliders work as usual.' : 'Sliders work as usual.'],
       confirmFinal: ['Before anything is booked or saved, you see what will happen and confirm it.',
         'Final buttons work straight away, with no extra step.'],
+      autonomy: [`${f.tremorRms > 2 ? 'Your hand shook while holding still, so the' : s.target >= 96 ? 'Buttons are very large, so the' : f.readPx >= 16 ? 'Small text was hard to read, so the' : 'The'} helper offers to do the safe steps for you, such as choosing from lists and pressing Next. You always say yes first, and you do the private steps yourself.`,
+        'The helper shows each step in large text and does a step only when you ask.'],
     };
     for (const k of Object.keys(auto)) {
       const on = isOn(k, s[k]);
@@ -216,16 +244,17 @@
           ? `Your clicks land within about ${px(f.sigma)} of where you aim, so buttons are ${s.target} px with ${s.gap} px gaps. A near-miss lands in the gap and does nothing.`
           : `Buttons are the standard ${s.target} px with ${s.gap} px gaps.`);
       if (skipped.length) summary.push(`You skipped ${skipped.join(' and ')}, so the settings that depend on ${skipped.length > 1 ? 'them' : 'it'} use standard values.`);
+      if (measured.read) summary.push(by.text);
     }
     for (const k of Object.keys(auto)) if (isOn(k, s[k])) summary.push(by[k]);
     return { byKey: by, summary };
   }
 
   /* ---------- presets & conditions ---------- */
-  const FIXED = Object.freeze({ target: 44, gap: 8, slipGuard: false, ignoreRepeatMs: 0, dragMode: 'pick', dateMode: 'list', sliderMode: 'stepper', confirmFinal: false });
+  const FIXED = Object.freeze({ target: 44, gap: 8, text: 20, slipGuard: false, ignoreRepeatMs: 0, dragMode: 'pick', dateMode: 'list', sliderMode: 'stepper', confirmFinal: false, autonomy: 'assist' });
 
-  function buildProfile({ pointing, tremor, drag, device, timing }) {
-    const features = Object.assign({}, pointing || {}, tremor || {}, dragFeatures(drag));
+  function buildProfile({ pointing, tremor, drag, reading, device, timing, prefs }) {
+    const features = Object.assign({}, pointing || {}, tremor || {}, dragFeatures(drag), readingFeatures(reading));
     const rec = recommend(features);
     const name = String(device || '').trim() || 'This computer';
     return {
@@ -240,6 +269,8 @@
       explain: rec.explain,
       level: rec.level,
       model: MODEL_ID,
+      // Language, voice, and who receives OTPs ("Ask Rahul for the code sent to his phone ending 4321").
+      prefs: Object.assign({ lang: 'en', voice: true, helperName: '', helperPhoneEnd: '' }, prefs || {}),
     };
   }
 
@@ -368,7 +399,7 @@
     return out;
   }
 
-  return { LEVELS, PRIOR, FIXED, POLICY, KEYS, STEPS, quantile, pointingFeatures, tremorFeatures, dragFeatures, measuredSteps, recommend, sizeFor, isOn,
+  return { LEVELS, PRIOR, FIXED, POLICY, KEYS, STEPS, quantile, pointingFeatures, tremorFeatures, dragFeatures, readingFeatures, textFor, measuredSteps, recommend, sizeFor, isOn,
     buildProfile, settingsFor, profileId, loadProfile, saveProfile, listProfiles, useProfile, deleteProfile, getPref, setPref, clearAll,
     esc, csvCell, synthTrials, evalNode };
 });

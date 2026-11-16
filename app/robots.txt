@@ -1,2 +1,7 @@
+# Steady: public pages may be crawled and cited by search engines and AI answer engines.
+# The practice portal and mock clinic pages are NOT blocked here on purpose: they carry
+# <meta name="robots" content="noindex"> and an X-Robots-Tag header, which crawlers must be able to read.
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: __SITE__/sitemap.xml

@@ -1,16 +1,22 @@
 {
   "manifest_version": 3,
-  "name": "Steady",
-  "version": "0.2.0",
-  "description": "Fits fiddly web controls to your hand: larger, separated and forgiving. Everything stays on this computer.",
+  "name": "Steady helper",
+  "version": "0.3.0",
+  "description": "Guides older people through government health portals step by step: large text, read aloud, safe steps done after a yes, private steps left to the person.",
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://api.anthropic.com/*"
   ],
   "background": {
     "service_worker": "js/sw.js"
   },
+  "options_page": "options.html",
   "action": {
-    "default_title": "Steady: open settings and calibration",
+    "default_title": "Steady helper: help me on this page",
     "default_icon": {
       "16": "icons/16.png",
       "32": "icons/32.png"
@@ -18,35 +24,32 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "js/hook.js"
-      ],
+      "matches": ["http://localhost/*", "http://127.0.0.1/*", "https://steady-helper-alpha.vercel.app/*"],
+      "exclude_matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-alpha.vercel.app/portal/*"],
+      "js": ["js/site-bridge.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-alpha.vercel.app/portal/*"],
+      "js": ["js/hook.js"],
       "run_at": "document_start",
       "world": "MAIN"
     },
     {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "js/core.js",
-        "js/bridge.js"
-      ],
+      "matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-alpha.vercel.app/portal/*"],
+      "js": ["js/core.js", "js/bridge.js"],
       "run_at": "document_start"
     },
     {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "js/core.js",
-        "js/adapt.js"
-      ],
+      "matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-alpha.vercel.app/portal/*"],
+      "js": ["js/core.js", "js/adapt.js"],
       "run_at": "document_idle",
       "world": "MAIN"
+    },
+    {
+      "matches": ["http://localhost/portal/*", "http://127.0.0.1/portal/*", "https://steady-helper-alpha.vercel.app/portal/*"],
+      "js": ["js/core.js", "js/agent-core.js", "js/flowmap-portal.js", "js/model-struggle.js", "js/agent.js"],
+      "run_at": "document_idle"
     }
   ],
   "icons": {

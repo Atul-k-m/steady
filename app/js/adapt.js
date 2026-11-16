@@ -20,19 +20,21 @@
   };
   const LEVEL_MARK = `<svg viewBox="0 0 48 24" width="40" height="20" aria-hidden="true"><rect x="1.5" y="4.5" width="45" height="15" rx="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19 4.5v15M29 4.5v15" stroke="currentColor" stroke-width="1.5" opacity=".55"/><circle class="bubble" cx="24" cy="12" r="4.25" fill="currentColor"/></svg>`;
 
-  const ACTIVATABLE = 'button, a[href], label, input:not([type="hidden"]), select, [role="button"], .steady-pickable, [data-steady-drop]';
+  const ACTIVATABLE = 'button, a[href], label, input:not([type="hidden"]), select, [role="button"], .steady-pickable, [data-steady-drop], [ondrop]';
   const FONT = '"Atkinson Hyperlegible Next", "Atkinson Hyperlegible", "Verdana", sans-serif';
 
   /* ---------- light-DOM styles for transformed controls (works on any host page) ---------- */
   const CSS = `
-:root{--steady-target:44px;--steady-gap:8px;--st-paper:#F5F0E6;--st-paper-2:#EAE2D1;--st-ink:#1D1A15;--st-ink-2:#4A443A;--st-line:#BDB29C;--st-spruce:#1F5B4C;--st-spruce-2:#174739;--st-amber:#F2D49B;--st-amber-ink:#6B3F00}
+:root{--steady-target:44px;--steady-gap:8px;--st-paper:#FFFFFF;--st-paper-2:#E3ECFA;--st-ink:#0E1A3A;--st-ink-2:#3E4A66;--st-line:#C9D3E4;--st-spruce:#0E1A3A;--st-spruce-2:#1C2B55;--st-amber:#DDF26A;--st-amber-ink:#0E1A3A;--st-focus:#2F5BAA}
+html.steady-has-panel{scroll-padding-bottom:var(--steady-panel-space,0px)}
+html.steady-has-panel body{padding-bottom:var(--steady-panel-space,0px)!important}
 .steady-visually-hidden{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;margin:0!important}
 html.steady-on :is(button,[role="button"],input[type="submit"],input[type="button"],select,label:has(> input[type="radio"]),label:has(> input[type="checkbox"])):not(.steady-skip):not(.steady-c *):not(.steady-pickable){min-height:var(--steady-target)!important;min-width:var(--steady-target)!important;margin:calc(var(--steady-gap) / 2)!important;font-size:max(1em,18px)!important;box-sizing:border-box!important}
 html.steady-on input[type="radio"],html.steady-on input[type="checkbox"]{width:1.25em;height:1.25em}
 .steady-c{font-family:${FONT};color:var(--st-ink);font-size:20px;line-height:1.35;margin:8px 0 4px;-webkit-font-smoothing:antialiased}
 .steady-c *{box-sizing:border-box}
 .steady-c button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.steady-c button:focus-visible,.steady-pickable:focus-visible,[data-steady-drop]:focus-visible{outline:3px solid var(--st-spruce);outline-offset:3px}
+.steady-c button:focus-visible,.steady-pickable:focus-visible,:is([data-steady-drop],[ondrop]):focus-visible{outline:3px solid var(--st-focus);outline-offset:3px}
 .steady-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--steady-target);min-width:var(--steady-target);padding:0 18px;border-radius:12px;border:2px solid var(--st-line);background:var(--st-paper);font-weight:600;transition:background-color .15s,border-color .15s}
 .steady-btn:hover{border-color:var(--st-ink-2)}
 .steady-btn:disabled{opacity:.45;cursor:not-allowed}
@@ -44,19 +46,23 @@ html.steady-on input[type="radio"],html.steady-on input[type="checkbox"]{width:1
 .steady-day strong{font-size:24px;font-variant-numeric:tabular-nums}
 .steady-day .steady-tag{font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--st-spruce)}
 .steady-c [aria-pressed="true"]{background:var(--st-spruce);border-color:var(--st-spruce);color:#fff}
-.steady-c [aria-pressed="true"] small,.steady-c [aria-pressed="true"] .steady-tag{color:#E4EFEA}
-.steady-c [aria-pressed="true"] svg{display:inline}
-.steady-day svg{display:none;width:18px;height:18px}
+.steady-c [aria-pressed="true"] small,.steady-c [aria-pressed="true"] .steady-tag{color:#E3ECFA}
+.steady-c [aria-pressed="true"] svg{visibility:visible;color:var(--st-amber)}
+.steady-day svg{visibility:hidden;flex:none;width:18px;height:18px}
 .steady-step{display:flex;align-items:center;gap:var(--steady-gap);flex-wrap:wrap}
-.steady-step output{min-width:5.5ch;text-align:center;font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.steady-step output{display:inline-grid;justify-items:center;min-width:5.5ch;font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.steady-step output>span{grid-area:1/1}
+.steady-step .steady-sizer{visibility:hidden}
 .steady-presets{display:flex;flex-wrap:wrap;gap:var(--steady-gap);margin-top:var(--steady-gap)}
-.steady-presets button svg{display:none;width:18px;height:18px}
+.steady-presets button svg{visibility:hidden;flex:none;width:18px;height:18px}
 .steady-pickable{cursor:pointer;outline-offset:3px;user-select:none}
-.steady-pickable[aria-pressed="true"]{background:var(--st-amber)!important;color:var(--st-amber-ink)!important;box-shadow:0 0 0 3px var(--st-amber-ink),0 6px 16px rgba(60,40,0,.18)!important}
-.steady-pickable[aria-pressed="true"]::after{content:"Picked";margin-left:.6em;font:700 14px/1 ${FONT};padding:4px 8px;border-radius:999px;background:var(--st-amber-ink);color:#fff}
-html.steady-picking [data-steady-drop]{position:relative;outline:3px dashed var(--st-spruce)!important;outline-offset:-3px;cursor:pointer;background-color:rgba(31,91,76,.06)!important}
-html.steady-picking [data-steady-drop]:hover{background-color:rgba(31,91,76,.14)!important}
-html.steady-picking [data-steady-drop]::before{content:"Place here";position:absolute;top:6px;right:6px;font:700 15px/1 ${FONT};padding:6px 10px;border-radius:999px;background:var(--st-spruce);color:#fff;pointer-events:none;z-index:1}
+html.steady-on .steady-pickable{min-height:var(--steady-target)!important;min-width:var(--steady-target)!important;margin:calc(var(--steady-gap) / 2)!important;font-size:max(1em,18px)!important;box-sizing:border-box!important;align-content:center}
+html.steady-pick :is([data-steady-drop],[ondrop]){min-height:var(--steady-target)!important}
+.steady-pickable[aria-pressed="true"]{background:var(--st-amber)!important;color:var(--st-amber-ink)!important;box-shadow:0 0 0 3px var(--st-amber-ink),0 6px 16px rgba(14,26,58,.18)!important}
+.steady-pickable[aria-pressed="true"]::after{content:"Picked";position:absolute;top:-12px;right:-8px;z-index:1;font:700 14px/1 ${FONT};padding:4px 8px;border-radius:999px;background:var(--st-amber-ink);color:#fff;pointer-events:none}
+html.steady-picking :is([data-steady-drop],[ondrop]){position:relative;outline:3px dashed var(--st-focus)!important;outline-offset:-3px;cursor:pointer;background-color:rgba(47,91,170,.06)!important}
+html.steady-picking :is([data-steady-drop],[ondrop]):hover{background-color:rgba(47,91,170,.14)!important}
+html.steady-picking :is([data-steady-drop],[ondrop])::before{content:"Place here";position:absolute;top:6px;right:6px;font:700 15px/1 ${FONT};padding:6px 10px;border-radius:999px;background:var(--st-spruce);color:var(--st-amber);pointer-events:none;z-index:1}
 `;
 
   /* ---------- state ---------- */
@@ -89,6 +95,7 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
     window.__steadySlipGuard = !!(settings && settings.slipGuard);
     const de = document.documentElement;
     de.classList.toggle('steady-on', !!settings);
+    de.classList.toggle('steady-pick', !!settings && settings.dragMode === 'pick');
     if (settings) {
       de.style.setProperty('--steady-target', settings.target + 'px');
       de.style.setProperty('--steady-gap', settings.gap + 'px');
@@ -100,14 +107,15 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
   function teardown() {
     cancelPick(true);
     while (cleanups.length) { try { cleanups.pop()(); } catch (e) { /* keep going */ } }
-    document.documentElement.classList.remove('steady-on');
+    document.documentElement.classList.remove('steady-on', 'steady-pick');
   }
 
   function scan() {
     if (!settings) return;
     if (settings.dateMode === 'list') document.querySelectorAll('input[type="date"]:not([data-steady-done])').forEach(dateList);
     if (settings.sliderMode === 'stepper') document.querySelectorAll('input[type="range"]:not([data-steady-done])').forEach(stepper);
-    if (settings.dragMode === 'pick') document.querySelectorAll('[draggable="true"]:not([data-steady-done])').forEach(pickable);
+    // Pick-then-place only when we can see somewhere to place. Otherwise native drag stays: never remove a working path.
+    if (settings.dragMode === 'pick' && zones().length) document.querySelectorAll('[draggable="true"]:not([data-steady-done])').forEach(pickable);
   }
 
   /* ---------- wiring to the site's own controls ---------- */
@@ -120,6 +128,18 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
   function labelFor(input) {
     if (input.labels && input.labels[0]) return input.labels[0].textContent.trim();
     return input.getAttribute('aria-label') || input.name || '';
+  }
+  // The original control stays in the form (it holds the value) but leaves the tab order and the accessibility tree.
+  function hideOriginal(input) {
+    const tab = input.getAttribute('tabindex'), aria = input.getAttribute('aria-hidden');
+    input.classList.add('steady-visually-hidden');
+    input.tabIndex = -1;
+    input.setAttribute('aria-hidden', 'true');
+    return () => {
+      input.classList.remove('steady-visually-hidden');
+      if (tab === null) input.removeAttribute('tabindex'); else input.setAttribute('tabindex', tab);
+      if (aria === null) input.removeAttribute('aria-hidden'); else input.setAttribute('aria-hidden', aria);
+    };
   }
   function keepFocus(container, render) {
     const a = document.activeElement;
@@ -145,7 +165,7 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
     wrap.className = 'steady-c steady-date';
     wrap.setAttribute('role', 'group');
     wrap.setAttribute('aria-label', labelFor(input) || 'Choose a day');
-    input.classList.add('steady-visually-hidden');
+    const restore = hideOriginal(input);
     input.after(wrap);
 
     function render() {
@@ -182,7 +202,7 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
     wrap.addEventListener('click', onClick);
     input.addEventListener('change', onExternal);
     render();
-    cleanups.push(() => { wrap.remove(); input.removeEventListener('change', onExternal); input.classList.remove('steady-visually-hidden'); delete input.dataset.steadyDone; });
+    cleanups.push(() => { wrap.remove(); input.removeEventListener('change', onExternal); restore(); delete input.dataset.steadyDone; });
   }
 
   /* ---------- range slider → stepper ---------- */
@@ -200,14 +220,16 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
     wrap.className = 'steady-c steady-slider';
     wrap.setAttribute('role', 'group');
     wrap.setAttribute('aria-label', labelFor(input) || 'Adjust value');
-    input.classList.add('steady-visually-hidden');
+    const restore = hideOriginal(input);
     input.after(wrap);
     const show = (v) => `${v}${unit ? ' ' + unit : ''}`;
+    // The readout is as wide as its longest value from the start, so − and + never move as the number changes.
+    const widest = [min, max, snap(min + step), snap(max - step), ...presets].map(show).reduce((a, b) => (b.length > a.length ? b : a), '');
     function render() {
       const v = Number(input.value);
       wrap.innerHTML = `<div class="steady-step">
           <button type="button" class="steady-btn" data-key="dec" data-delta="-1" aria-label="Less, by ${step}" ${v <= min ? 'disabled' : ''}>${ICON.minus}</button>
-          <output aria-live="polite">${show(v)}</output>
+          <output aria-live="polite"><span>${show(v)}</span><span class="steady-sizer" aria-hidden="true">${widest}</span></output>
           <button type="button" class="steady-btn" data-key="inc" data-delta="1" aria-label="More, by ${step}" ${v >= max ? 'disabled' : ''}>${ICON.plus}</button>
         </div>
         <div class="steady-presets">${presets.map((p) => `<button type="button" class="steady-btn" data-key="p${p}" data-value="${p}" aria-pressed="${v === p}">${ICON.check}${show(p)}</button>`).join('')}</div>`;
@@ -224,7 +246,7 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
     wrap.addEventListener('click', onClick);
     input.addEventListener('input', onExternal);
     render();
-    cleanups.push(() => { wrap.remove(); input.removeEventListener('input', onExternal); input.classList.remove('steady-visually-hidden'); delete input.dataset.steadyDone; });
+    cleanups.push(() => { wrap.remove(); input.removeEventListener('input', onExternal); restore(); delete input.dataset.steadyDone; });
   }
 
   /* ---------- drag-and-drop → pick, then place ---------- */
@@ -234,6 +256,9 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
     item.setAttribute('draggable', 'false'); // no accidental native drags while in pick mode
     item.classList.add('steady-pickable');
     const hadRole = item.hasAttribute('role'), hadTab = item.hasAttribute('tabindex');
+    // The "Picked" badge is absolutely placed, so it never widens the item. Only static items get a positioning context.
+    const madeRelative = getComputedStyle(item).position === 'static';
+    if (madeRelative) item.style.position = 'relative';
     if (!hadRole) item.setAttribute('role', 'button');
     if (!hadTab) item.tabIndex = 0;
     item.setAttribute('aria-pressed', 'false');
@@ -246,10 +271,13 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
       item.setAttribute('draggable', 'true'); item.classList.remove('steady-pickable'); item.removeAttribute('aria-pressed');
       if (!hadRole) item.removeAttribute('role');
       if (!hadTab) item.removeAttribute('tabindex');
+      if (madeRelative) item.style.position = '';
       delete item.dataset.steadyDone;
     });
   }
-  function zones() { return [...document.querySelectorAll('[data-steady-drop]')]; }
+  // Drop zones: found by the listener hook, or declared inline (ondrop="…", as many tutorial and CMS pages do).
+  const DROP = '[data-steady-drop], [ondrop]';
+  function zones() { return [...document.querySelectorAll(DROP)]; }
   function togglePick(item) {
     if (picked === item) { cancelPick(); announce('Put down. Nothing moved.'); return; }
     cancelPick(true);
@@ -278,7 +306,7 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
     return el.dispatchEvent(new DragEvent(type, { bubbles: true, cancelable: true, composed: true, dataTransfer: dt, clientX: x, clientY: y }));
   }
   function moveTo(item, zone) {
-    const from = item.parentElement && item.parentElement.closest('[data-steady-drop]');
+    const from = item.parentElement && item.parentElement.closest(DROP);
     const dt = new DataTransfer();
     const ir = item.getBoundingClientRect(), zr = zone.getBoundingClientRect();
     const cx = zr.left + zr.width / 2, cy = zr.top + zr.height / 2;
@@ -314,7 +342,7 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
   });
 
   /* ---------- slip guard + ignore-repeat (Steady Clicks lineage) ---------- */
-  let downInfo = null, suppressUntil = 0, lastAct = { t: 0, el: null };
+  let downInfo = null, suppressUntil = 0, lastAct = { t: -Infinity, el: null }; // -Infinity: a click right after load is never a repeat
   function synthClick(el) {
     window.__steadySynth = true;
     try { el.click(); } finally { window.__steadySynth = false; }
@@ -339,7 +367,8 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
     setTimeout(() => synthClick(el), 0);
   }, true);
   window.addEventListener('click', (e) => {
-    if (window.__steadySynth) return;
+    // The helper agent's own clicks (marked by agent.js) are deliberate and paced: never treat them as double presses.
+    if (window.__steadySynth || document.documentElement.hasAttribute('data-steady-agent-act')) return;
     const now = performance.now();
     if (now < suppressUntil) { e.preventDefault(); e.stopImmediatePropagation(); return; }
     if (!settings || !settings.ignoreRepeatMs) return;
@@ -393,32 +422,32 @@ html.steady-picking [data-steady-drop]::before{content:"Place here";position:abs
   const PANEL_CSS = `
 :host{all:initial}
 *{box-sizing:border-box}
-.panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:min(300px,calc(100vw - 32px));font-family:${FONT};font-size:16px;line-height:1.35;color:#1D1A15;background:#F5F0E6;border:1.5px solid #BDB29C;border-radius:18px;padding:12px 12px 12px 14px;box-shadow:0 10px 30px rgba(40,30,10,.18),0 2px 6px rgba(40,30,10,.12)}
+.panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:min(300px,calc(100vw - 32px));font-family:${FONT};font-size:16px;line-height:1.35;color:#0E1A3A;background:#FFFFFF;border:1.5px solid #C9D3E4;border-radius:18px;padding:12px 12px 12px 14px;box-shadow:0 10px 30px rgba(14,26,58,.18),0 2px 6px rgba(14,26,58,.12)}
 .head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 6px}
-.toggle{min-height:44px!important;padding:0 12px!important;font-size:15px!important}
+.toggle{padding:0 12px!important;font-size:15px!important}
 .ctx{margin-bottom:8px}
 [hidden]{display:none!important}
-.brand{display:flex;align-items:center;gap:10px;color:#1F5B4C;font:700 20px/1 "Literata",Georgia,serif;margin:0}
-.status{margin:0 0 8px;color:#4A443A}
+.brand{display:flex;align-items:center;gap:10px;color:#2F5BAA;font:700 20px/1 "Onest","Literata",Georgia,serif;margin:0}
+.status{margin:0 0 8px;color:#3E4A66}
 .more{margin-top:4px}
-.status b{color:#1D1A15}
+.status b{color:#0E1A3A}
 .row{display:flex;flex-wrap:wrap;gap:8px}
-button,a.btn{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:var(--t,44px);padding:0 14px;border-radius:12px;border:2px solid #BDB29C;background:#FBF8F2;color:#1D1A15;font:600 16px/1.1 ${FONT};cursor:pointer}
-button:hover,a.btn:hover{border-color:#4A443A}
-button:focus-visible,a.btn:focus-visible,h2:focus-visible{outline:3px solid #1F5B4C;outline-offset:2px}
-button[aria-pressed="true"]{background:#1F5B4C;border-color:#1F5B4C;color:#fff}
+button,a.btn{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:var(--t,44px);min-width:var(--t,44px);padding:0 14px;border-radius:12px;border:2px solid #C9D3E4;background:#F5F8FD;color:#0E1A3A;font:600 16px/1.1 ${FONT};cursor:pointer}
+button:hover,a.btn:hover{border-color:#3E4A66}
+button:focus-visible,a.btn:focus-visible,h2:focus-visible{outline:3px solid #2F5BAA;outline-offset:2px}
+button[aria-pressed="true"]{background:#0E1A3A;border-color:#0E1A3A;color:#fff}
 button svg,a.btn svg{width:20px;height:20px}
-.live{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#EAE2D1;font-weight:600}
+.live{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#E3ECFA;font-weight:600}
 .live:empty{display:none}
-.confirm{position:fixed;left:50%;transform:translateX(-50%);z-index:2147483647;width:min(640px,calc(100vw - 32px));background:#FBF8F2;color:#1D1A15;border:2px solid #1F5B4C;border-radius:20px;padding:20px 22px;font-family:${FONT};font-size:19px;box-shadow:0 18px 48px rgba(40,30,10,.28),0 3px 8px rgba(40,30,10,.14)}
+.confirm{position:fixed;left:50%;transform:translateX(-50%);z-index:2147483647;width:min(640px,calc(100vw - 32px));background:#F5F8FD;color:#0E1A3A;border:2px solid #0E1A3A;border-radius:20px;padding:20px 22px;font-family:${FONT};font-size:19px;box-shadow:0 18px 48px rgba(14,26,58,.28),0 3px 8px rgba(14,26,58,.14)}
 .confirm.top{top:16px}.confirm.bottom{bottom:16px}
-.confirm h2{margin:0 0 6px;font:700 24px/1.2 "Literata",Georgia,serif}
+.confirm h2{margin:0 0 6px;font:700 24px/1.2 "Onest","Literata",Georgia,serif}
 .confirm p{margin:0 0 14px}
 .confirm .row button{min-height:max(var(--t,44px),56px);font-size:19px;padding:0 22px}
-.confirm .primary{background:#1F5B4C;border-color:#1F5B4C;color:#fff}
-.confirm .primary:hover{background:#174739}
+.confirm .primary{background:#0E1A3A;border-color:#0E1A3A;color:#fff}
+.confirm .primary:hover{background:#1C2B55}
 .confirm button:disabled{opacity:.5;cursor:wait}
-.hint{color:#4A443A;font-size:16px;margin:10px 0 0!important}
+.hint{color:#3E4A66;font-size:16px;margin:10px 0 0!important}
 .bubble{transition:transform .9s cubic-bezier(.16,1,.3,1)}
 @media (prefers-reduced-motion:reduce){.bubble{transition:none}}
 `;
@@ -432,10 +461,11 @@ button svg,a.btn svg{width:20px;height:20px}
     root.addEventListener('click', onPanelClick);
   }
   function renderPanel(message) {
-    if (params.get('panel') === '0') return;
+    // On a portal with the helper agent, the agent's panel is the one control surface (it has Stop, Hide and modes).
+    if (params.get('panel') === '0' || document.documentElement.dataset.steadyAgent === '1') return;
     ensurePanel();
     const p = root.querySelector('.panel');
-    const t = settings ? Math.min(72, Math.max(44, settings.target)) : 44;
+    const t = settings ? Math.max(44, settings.target) : 44; // panel controls follow the profile like everything else
     host.style.setProperty('--t', t + 'px');
     const label = { original: 'Original page', fixed: 'Fixed accessible', personal: 'Fitted to you' }[condition] || condition;
     const status = !settings
@@ -457,6 +487,17 @@ button svg,a.btn svg{width:20px;height:20px}
         ${condition === 'personal' ? `<a class="btn" href="${calUrl}">Recalibrate</a>` : ''}
       </div>
       <p class="live" aria-live="polite">${message || ''}</p>`;
+    reservePanelSpace(p);
+  }
+  // Room under the page so every control can be scrolled clear of the panel, and focus never sits behind it
+  // (WCAG 2.2, 2.4.11). The space only ever grows, so content never moves under the hand.
+  let reserved = 0;
+  function reservePanelSpace(p) {
+    const h = Math.ceil(p.getBoundingClientRect().height) + 32;
+    if (h <= reserved) return;
+    reserved = h;
+    document.documentElement.style.setProperty('--steady-panel-space', h + 'px');
+    document.documentElement.classList.add('steady-has-panel');
   }
   function announce(msg) { if (!root) return; const l = root.querySelector('.live'); if (l) l.textContent = msg; }
   function onPanelClick(e) {

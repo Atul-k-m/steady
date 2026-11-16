@@ -1,4 +1,4 @@
-/* Study hub: device profiles, condition switcher, participant and variant, session list, CSV export. */
+/* Research study hub (hub.html): device profiles, condition switcher, participant and variant, session list, CSV export. */
 (function () {
   const S = window.Steady;
 
@@ -8,7 +8,7 @@
     const line = document.getElementById('profile-line'), b = document.getElementById('cal-btn');
     if (prof) {
       const s = S.settingsFor('personal', prof, false);
-      line.textContent = `Fitted for “${prof.device}”: buttons ${s.target} px, gaps ${s.gap} px${s.slipGuard ? ', slip guard on' : ''}.`;
+      line.textContent = `Fitted for “${prof.device}”: buttons ${s.target} px, gaps ${s.gap} px, text ${s.text} px${s.slipGuard ? ', slip guard on' : ''}.`;
       b.textContent = 'Check again';
       b.classList.remove('primary');
     }

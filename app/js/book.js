@@ -51,7 +51,7 @@
     err.textContent = '';
     const ok = date.value === wantISO && form.time.value === want.time && Number(rem.value) === want.rem;
     const done = document.getElementById('done');
-    done.innerHTML = `<strong>Booked.</strong> ${form.dataset.steadySummary} <a href="index.html">Back to the study hub</a>`;
+    done.innerHTML = `<strong>Booked.</strong> ${form.dataset.steadySummary} <a href="hub.html">Back to the study hub</a>`;
     done.classList.add('show');
     form.querySelector('.submit').disabled = true;
     S.metrics.end({ completed: ok, meta: { finalCorrect: ok, final: { date: date.value, time: form.time.value, rem: Number(rem.value) } } });

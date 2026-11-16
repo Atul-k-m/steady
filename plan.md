@@ -46,10 +46,10 @@
 - Storage in `localStorage` and `chrome.storage`.
 
 **Acceptance criteria**
-- [ ] Finishes in ≤ 60 s; every step is skippable; skipping all three still yields a valid profile.
-- [ ] The recommended target size increases **monotonically** with synthetic scatter (unit test).
-- [ ] Repeat calibrations by the same person on the same day land within ±1 size level (pilot check).
-- [ ] Every setting shows a human-readable reason.
+- [ ] Finishes in ≤ 60 s; every step is skippable; skipping all three still yields a valid profile. *(Skipping is verified by unit and e2e tests. The step budgets of 25 + 12 + 20 s cap the exercise, and the profile records the seconds per step; real-user timing waits for the pilot.)*
+- [x] The recommended target size increases **monotonically** with synthetic scatter (unit test).
+- [ ] Repeat calibrations by the same person on the same day land within ±1 size level (pilot check). *(Needs participants.)*
+- [x] Every setting shows a human-readable reason, on or off, and it follows the user's overrides (unit test plus e2e).
 
 ---
 

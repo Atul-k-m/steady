@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta name="theme-color" content="#0E1A3A">
+  <title>Steady helper options</title>
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/steady.css">
+  <style>
+    .opt{max-width:760px;margin:0 auto;padding:32px 16px 64px}
+    .opt h1{font-size:clamp(30px,4vw,44px);margin:0 0 8px}
+    .opt section{border:2px solid var(--line,#C9D3E4);border-radius:18px;padding:20px;margin:22px 0}
+    .opt h2{margin:0 0 8px;font-size:24px}
+    .opt label{display:block;font-weight:600;margin:12px 0 6px}
+    .opt input[type=password],.opt select{width:100%;font:inherit;font-size:18px;min-height:48px;padding:8px 12px;border:2px solid #3E4A66;border-radius:12px}
+    .opt .check{display:flex;gap:12px;align-items:flex-start;font-weight:400}
+    .opt .check input{width:26px;height:26px;flex:none;margin-top:2px}
+    .opt .row{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+    .opt .status{min-height:1.4em;margin-top:10px;font-weight:600}
+    .opt ul{padding-left:1.2em}
+  </style>
+</head>
+<body>
+  <main class="opt">
+    <h1>Steady helper options</h1>
+    <p class="lede">Set these up once, on the computer the helper runs on. Everything here stays in this browser.</p>
+
+    <section aria-labelledby="mode-h">
+      <h2 id="mode-h">How much the helper does at first</h2>
+      <label for="level">Starting mode</label>
+      <select id="level">
+        <option value="">Follow the one-minute check (recommended)</option>
+        <option value="assist">You lead: the helper shows each step and helps when asked</option>
+        <option value="copilot">The helper does the safe steps after a yes</option>
+        <option value="autopilot">The helper does the safe steps and stops for the private ones</option>
+      </select>
+      <p>The person can change this at any time from the helper panel, and the helper only ever offers more help: it never takes it.</p>
+    </section>
+
+    <section aria-labelledby="ai-h">
+      <h2 id="ai-h">AI fallback for unfamiliar pages (optional)</h2>
+      <p>On the pages it knows, the helper follows verified steps and needs no AI. If a portal shows a page it doesn't know, it can ask Claude for the next safe step.</p>
+      <p><b>What is sent:</b> a masked description of the page: button and field labels, whether each field is filled or empty, list options, and messages with all numbers removed. <b>Never sent:</b> Aadhaar, OTPs, captcha, names, phone numbers, addresses, or anything typed. Whatever the AI suggests is checked against the same rules: it can never fill private fields, tick consent or press Submit.</p>
+      <label class="check"><input type="checkbox" id="ai"> <span>Use the AI fallback</span></label>
+      <label for="key">Anthropic API key</label>
+      <input type="password" id="key" autocomplete="off" spellcheck="false" placeholder="sk-ant-…">
+      <p class="note" style="color:var(--ink-2,#3E4A66)">Stored only in this browser profile's extension storage. Anyone with access to this browser profile could read it, so use a key with a spending limit.</p>
+      <div class="row">
+        <button class="btn primary" type="button" id="save">Save</button>
+        <button class="btn" type="button" id="test">Test the key (sends one short request)</button>
+      </div>
+      <p class="status" id="status" role="status"></p>
+    </section>
+
+    <section aria-labelledby="data-h">
+      <h2 id="data-h">Saved answers</h2>
+      <p>The helper keeps answers on this computer (encrypted) so a portal timeout doesn't mean starting again. Aadhaar is kept only if the person agreed. Everything is deleted after the application is sent, or after 7 days.</p>
+      <div class="row"><button class="btn" type="button" id="wipe">Delete saved answers now</button></div>
+      <p class="status" id="wipe-status" role="status"></p>
+    </section>
+  </main>
+  <script src="js/options.js"></script>
+</body>
+</html>

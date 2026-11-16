@@ -1,0 +1,18 @@
+# Steady
+
+> Steady is a free Chrome helper that guides older people, first of all people living with Parkinson's, through government health forms: large text, read aloud in Hindi or English, safe steps done after a yes, private steps left to them.
+
+Steady is a hackathon project (India, 2026). It answers a documented gap: about 1.36 crore of roughly 6 crore eligible citizens aged 70+ had the senior health card as of September 2026 (PIB), and app-store reviews describe captchas that older users cannot read, OTPs sent to a child's phone, and sessions that wipe after a timeout.
+
+How it works:
+- A one-minute check measures tap accuracy, hand steadiness and the smallest readable text, and sets button size, text size and how much the helper offers to do.
+- On a portal with verified steps, the helper walks through them, does safe steps (lists, Next, retries) after a yes, and leaves Aadhaar, OTP, captcha, consent and Submit to the person.
+- On any other website, it enlarges fields on demand and can use an optional AI planner (Claude) that sees only a masked page description, checked by guardrails.
+- An on-device struggle detector and live tremor estimate decide when to offer more help; more help always needs a yes.
+- No servers; nothing from websites is stored. Status: works fully on a practice copy of a 70+ enrolment portal; real portals need verified adapters.
+
+## Pages
+- [Home](__SITE__/): what it does, for whom, limits, FAQ
+- [Install the helper](__SITE__/get.html)
+- [One-minute check](__SITE__/calibrate.html)
+- [Privacy](__SITE__/privacy.html)

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta name="theme-color" content="#0E1A3A">
+  <meta name="description" content="Install the free Steady helper in Chrome in six steps, check that it found your settings, and open the practice portal to try it with your parent.">
+  <title>Install the Steady helper extension for Chrome</title>
+  <link rel="canonical" href="__SITE__/get.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Steady">
+  <meta property="og:title" content="Install the Steady helper extension for Chrome">
+  <meta property="og:description" content="Install the free Steady helper in Chrome in six steps, check that it found your settings, and open the practice portal to try it with your parent.">
+  <meta property="og:url" content="__SITE__/get.html">
+  <meta property="og:image" content="__SITE__/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Steady: government health forms, steadied for older hands and eyes.">
+  <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Install the Steady helper extension for Chrome">
+  <meta name="twitter:description" content="Install the free Steady helper in Chrome in six steps, check that it found your settings, and open the practice portal to try it with your parent.">
+  <meta name="twitter:image" content="__SITE__/img/og.png">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/steady.css">
+  <script src="js/core.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="wordmark" href="index.html" aria-label="Steady, home">
+      <img class="logo-mark" src="img/logo.svg" alt="" width="34" height="34" style="width:34px;height:34px;border-radius:9px;flex:none">
+      Steady
+    </a>
+    <nav aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="calibrate.html">One-minute check</a>
+      <a href="get.html" aria-current="page">Get the helper</a>
+      <a href="portal/index.html">Practice portal</a>
+      <a href="hub.html">Study hub</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <h1>Install the helper</h1>
+    <p class="lede">About five minutes, once, on the laptop your parent will use. You need Google Chrome. The helper isn’t in the Chrome Web Store yet, so Chrome loads it from a folder.</p>
+
+    <div class="get">
+      <ol class="install">
+        <li>
+          <div>
+            <h2>Download the helper</h2>
+            <p>It’s a zip file of about half a megabyte. Chrome saves it in your Downloads folder.</p>
+            <div class="row" style="margin-top:16px">
+              <a class="btn primary" href="downloads/steady-extension.zip" download>Download steady-extension.zip</a>
+            </div>
+            <p class="hint" style="margin-top:14px">Running Steady from its code folder (local development)? There’s no zip there. Skip to step 3 and choose the <code>app</code> folder itself.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h2>Unzip it</h2>
+            <p>Open Downloads, right-click <b>steady-extension.zip</b>, choose <b>Extract All…</b> and then <b>Extract</b>. You get a folder called <b>steady-extension</b> with a file named <code>manifest.json</code> inside.</p>
+            <p>Move that folder somewhere it won’t be tidied away, such as Documents. Chrome reads it from there every time it starts.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h2>Open Chrome’s extensions page</h2>
+            <p>Type this into Chrome’s address bar and press Enter. Web pages aren’t allowed to link to it, so it has to be typed or pasted.</p>
+            <div class="copy-row">
+              <code id="ext-url">chrome://extensions</code>
+              <button class="btn" type="button" id="copy-url">Copy</button>
+            </div>
+            <p class="hint" id="copy-note" role="status"></p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h2>Turn on Developer mode</h2>
+            <p>It’s a switch at the top right of the extensions page. It lets Chrome load an extension from a folder. It doesn’t change anything else.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h2>Click “Load unpacked”</h2>
+            <p>The button appears at the top left. Choose the <b>steady-extension</b> folder (or the <code>app</code> folder in local development) and click <b>Select Folder</b>. Steady now appears in the list.</p>
+            <p>To keep it in reach, click the puzzle-piece icon next to the address bar and pin Steady.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h2>Come back and reload this page</h2>
+            <p>The box on this page should then say <b>Helper found ✓</b>. When Chrome starts, it may warn about extensions in developer mode. That’s because this one isn’t from the Web Store yet. Close the warning, but don’t choose to turn the extension off.</p>
+          </div>
+        </li>
+      </ol>
+
+      <aside class="aside status-card" aria-labelledby="status-h">
+        <h2 id="status-h">On this computer</h2>
+        <div id="ext-status" class="status" role="status">
+          <p class="hint">Checking…</p>
+        </div>
+        <div class="row" style="margin-top:18px">
+          <button class="btn" type="button" id="reload">Reload this page</button>
+        </div>
+      </aside>
+    </div>
+
+    <section class="band key-band" aria-labelledby="key-h">
+      <h2 id="key-h">The AI key goes in the extension, never on this website</h2>
+      <div class="band-grid">
+        <div class="who-text">
+          <p>The helper follows a checked map of the practice portal’s steps and needs no AI for that. If it reaches a page it doesn’t recognise, it can ask an AI model what to do next, but only if you add an API key.</p>
+          <p>To add one, right-click the Steady icon, choose <b>Options</b>, and paste the key there. It stays in the extension’s storage on this computer. This website never asks for it, and couldn’t send it anywhere: its security policy blocks every network connection.</p>
+        </div>
+        <div class="who-text">
+          <p>What the AI receives is a masked description of the form: the labels, which fields are filled, and error messages with numbers removed. It never receives the Aadhaar number, an OTP, a name, a phone number or any answer typed in. <a href="privacy.html">More on your data</a></p>
+          <div class="row" style="margin-top:20px">
+            <a class="btn primary" href="portal/index.html">Try the practice portal</a>
+            <a class="btn" href="calibrate.html">Do the one-minute check</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/get.js"></script>
+</body>
+</html>

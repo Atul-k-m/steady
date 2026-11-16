@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Senior Health Cover · Beneficiary Portal (practice copy)</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="portal.css">
+  <script src="portal.js" defer></script>
+</head>
+<body data-step="login">
+<div id="mock-banner">Practice copy for testing. Not a government website. Nothing you type leaves this computer.</div>
+
+<div id="page" class="page">
+  <div class="topstrip">
+    <div class="wrap topstrip-in">
+      <a class="skip" href="#main">Skip to main content</a>
+      <span class="sep">|</span>
+      <span>English</span>
+      <span class="topright">Date: <span id="today"></span></span>
+    </div>
+  </div>
+
+  <header class="phead">
+    <div class="wrap phead-in">
+      <svg class="plogo" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="24" r="22" fill="#1b5e9a"/>
+        <path d="M24 37s-12-7.5-12-16a6.5 6.5 0 0 1 12-3.4A6.5 6.5 0 0 1 36 21c0 8.5-12 16-12 16z" fill="#fff"/>
+        <path d="M13 25h6.5l2-4.5 3 8 2.2-3.5H35" fill="none" stroke="#1b5e9a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <div class="ptitle">
+        <h1>Senior Health Cover · Beneficiary Portal (practice copy)</h1>
+        <p>Enrolment for citizens aged 70 years and above</p>
+      </div>
+      <div class="phelp">
+        <span>Beneficiary Services</span>
+        <span class="muted">Helpdesk: not available in practice copy</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="pnav" aria-label="Portal menu">
+    <div class="wrap pnav-in">
+      <span>Home</span>
+      <span class="on">Beneficiary</span>
+      <span>Find Hospital</span>
+      <span>Grievance</span>
+      <span>Downloads</span>
+      <span>FAQ</span>
+      <span>Contact Us</span>
+    </div>
+  </nav>
+
+  <div class="ticker">
+    <div class="wrap ticker-in">
+      <span class="ticker-label">Latest Updates</span>
+      <div class="ticker-track"><span class="ticker-text">Citizens aged 70 years and above can enrol for the Senior citizen 70+ card irrespective of income. &nbsp;&#9679;&nbsp; e-KYC services will be unavailable on Sunday from 02:00 to 06:00 hrs due to scheduled maintenance. &nbsp;&#9679;&nbsp; Never share your OTP with anyone over phone calls. &nbsp;&#9679;&nbsp; Keep your Aadhaar-linked mobile phone with you before starting enrolment.</span></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="crumb">Home &raquo; Beneficiary &raquo; New Enrolment (70+)</div>
+
+    <ol class="pstepper" id="pstepper" aria-label="Application progress">
+      <li>Login</li>
+      <li>Verify OTP</li>
+      <li>Search</li>
+      <li>e-KYC</li>
+      <li>Details</li>
+      <li>Photo</li>
+      <li>Review &amp; Submit</li>
+    </ol>
+
+    <div class="cols">
+      <main id="main" class="maincol" tabindex="-1">
+        <div id="error-msg" class="perror" role="alert" hidden></div>
+
+        <!-- 1. login -->
+        <section class="pstep panel" id="step-login" data-step="login">
+          <h2>Beneficiary Login</h2>
+          <div class="pbody">
+            <p class="hint">Login with your mobile number. A One Time Password (OTP) will be sent to this number.</p>
+            <div class="frow">
+              <label class="flabel" for="mobile">Mobile Number<span class="req" aria-hidden="true">*</span></label>
+              <div class="fctl"><input type="text" id="mobile" maxlength="10" inputmode="numeric" autocomplete="off" spellcheck="false"></div>
+            </div>
+            <div class="frow">
+              <span class="flabel">Captcha</span>
+              <div class="fctl"><img id="captcha-img" class="capimg" width="156" height="44" alt="Captcha image"> <a href="#" id="captcha-refresh" class="plink" aria-label="Refresh captcha">Refresh</a></div>
+            </div>
+            <div class="frow">
+              <label class="flabel" for="captcha-input">Enter Captcha<span class="req" aria-hidden="true">*</span></label>
+              <div class="fctl"><input type="text" id="captcha-input" class="w-cap" maxlength="6" autocomplete="off" spellcheck="false"></div>
+            </div>
+            <div class="frow">
+              <span class="flabel"></span>
+              <div class="fctl"><button type="button" id="btn-get-otp" class="btn">Get OTP</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. otp -->
+        <section class="pstep panel" id="step-otp" data-step="otp" hidden>
+          <h2>Verify OTP</h2>
+          <div class="pbody">
+            <p id="otp-sent-to" class="sentto"></p>
+            <div class="frow">
+              <label class="flabel" for="otp-input">Enter OTP<span class="req" aria-hidden="true">*</span></label>
+              <div class="fctl"><input type="text" id="otp-input" class="w-otp" maxlength="6" inputmode="numeric" autocomplete="one-time-code"> <span id="otp-timer" class="otimer">Time remaining: 02:00</span></div>
+            </div>
+            <div class="frow">
+              <span class="flabel"></span>
+              <div class="fctl"><span class="hint">Did not receive OTP?</span> <a href="#" id="otp-resend" class="plink">Resend OTP</a></div>
+            </div>
+            <div class="frow">
+              <span class="flabel"></span>
+              <div class="fctl"><button type="button" id="btn-verify-otp" class="btn">Verify</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. search -->
+        <section class="pstep panel" id="step-search" data-step="search" hidden>
+          <h2>Search Beneficiary</h2>
+          <div class="pbody">
+            <p class="hint">Select the scheme and enter the Aadhaar number of the beneficiary.</p>
+            <div class="frow" role="radiogroup" aria-labelledby="scheme-lbl">
+              <span class="flabel" id="scheme-lbl">Select Scheme<span class="req" aria-hidden="true">*</span></span>
+              <div class="fctl radios">
+                <label><input type="radio" name="scheme" id="scheme-pmjay" value="pmjay"> PM-JAY family card</label>
+                <label><input type="radio" name="scheme" id="scheme-senior" value="senior"> Senior citizen 70+ card</label>
+              </div>
+            </div>
+            <div class="frow">
+              <label class="flabel" for="aadhaar-input">Aadhaar Number<span class="req" aria-hidden="true">*</span></label>
+              <div class="fctl"><input type="text" id="aadhaar-input" maxlength="12" inputmode="numeric" autocomplete="off" spellcheck="false"> <span class="hint">12 digits, without spaces</span></div>
+            </div>
+            <div class="frow">
+              <span class="flabel">Captcha</span>
+              <div class="fctl"><img id="captcha2-img" class="capimg" width="156" height="44" alt="Captcha image"> <a href="#" id="captcha2-refresh" class="plink" aria-label="Refresh captcha">Refresh</a></div>
+            </div>
+            <div class="frow">
+              <label class="flabel" for="captcha2-input">Enter Captcha<span class="req" aria-hidden="true">*</span></label>
+              <div class="fctl"><input type="text" id="captcha2-input" class="w-cap" maxlength="6" autocomplete="off" spellcheck="false"></div>
+            </div>
+            <div class="frow">
+              <span class="flabel"></span>
+              <div class="fctl"><button type="button" id="btn-search" class="btn">Search</button></div>
+            </div>
+
+            <div id="search-result" class="sresult" hidden>
+              <h3 class="subhead">Search Result</h3>
+              <table class="rtable">
+                <thead>
+                  <tr><th>S.No.</th><th>Beneficiary Name</th><th>Age</th><th>Gender</th><th>Aadhaar No.</th><th>Card Type</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td id="sr-name">R***** K****</td>
+                    <td id="sr-age">74</td>
+                    <td>M</td>
+                    <td id="sr-aadhaar"></td>
+                    <td>Senior citizen 70+</td>
+                    <td><button type="button" id="btn-proceed-ekyc" class="btn btn-sm">Proceed to e-KYC</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. ekyc -->
+        <section class="pstep panel" id="step-ekyc" data-step="ekyc" hidden>
+          <h2>Aadhaar e-KYC (Beneficiary Authentication)</h2>
+          <div class="pbody">
+            <table class="kv">
+              <tr><th>Beneficiary Name</th><td>R***** K****</td><th>Aadhaar No.</th><td id="ek-aadhaar"></td></tr>
+              <tr><th>Authentication Mode</th><td>Aadhaar OTP</td><th>Card Type</th><td>Senior citizen 70+</td></tr>
+            </table>
+            <p class="hint">Read the consent below carefully before proceeding.</p>
+            <div class="consent" tabindex="0" role="region" aria-label="Consent text">
+              <p>I, the holder of the Aadhaar number shown above, hereby state that I have no objection to authenticating myself with the Aadhaar based authentication system, and I give my consent to providing my Aadhaar number and One Time Password (OTP) for Aadhaar based authentication for the purpose of availing benefits under this health cover. I understand that the Aadhaar number, OTP and demographic information shared by me will be used only for authenticating my identity through the Aadhaar authentication system for this specific transaction and for no other purpose.</p>
+              <p>I understand that the OTP and any biometric information I provide for authentication shall be used only for authenticating my identity and shall not be stored or shared. I understand that the demographic details (name, date of birth, gender, address and photograph) returned on successful authentication may be stored for the purpose of creating my beneficiary record and issuing the health card, and may be shared with empanelled hospitals for the purpose of treatment.</p>
+              <p>I confirm that I am the beneficiary, or that I have been authorised by the beneficiary to perform this authentication on his or her behalf. I understand that I may withdraw this consent at any time by writing to the grievance cell, and that withdrawing consent may result in cancellation of my enrolment. I have been informed that refusal to authenticate will not lead to denial of benefit, and that alternative means of identification are available at an empanelled hospital or a common service centre.</p>
+            </div>
+            <div class="chkrow">
+              <input type="checkbox" id="consent-check">
+              <label for="consent-check">I give my consent to authenticate with Aadhaar for this application.</label>
+            </div>
+            <div class="actions"><button type="button" id="btn-send-aadhaar-otp" class="btn">Send OTP to Aadhaar-linked mobile</button></div>
+          </div>
+        </section>
+
+        <!-- 5. ekyc-otp -->
+        <section class="pstep panel" id="step-ekyc-otp" data-step="ekyc-otp" hidden>
+          <h2>Aadhaar OTP Verification</h2>
+          <div class="pbody">
+            <p id="aotp-sent-to" class="sentto"></p>
+            <div class="frow">
+              <label class="flabel" for="aotp-input">Enter Aadhaar OTP<span class="req" aria-hidden="true">*</span></label>
+              <div class="fctl"><input type="text" id="aotp-input" class="w-otp" maxlength="6" inputmode="numeric" autocomplete="one-time-code"> <span id="aotp-timer" class="otimer">Time remaining: 02:00</span></div>
+            </div>
+            <div class="frow">
+              <span class="flabel"></span>
+              <div class="fctl"><span class="hint">Did not receive OTP?</span> <a href="#" id="aotp-resend" class="plink">Resend OTP</a></div>
+            </div>
+            <div class="frow">
+              <span class="flabel"></span>
+              <div class="fctl"><button type="button" id="btn-verify-aotp" class="btn">Verify</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. details -->
+        <section class="pstep panel" id="step-details" data-step="details" hidden>
+          <h2>Beneficiary Details</h2>
+          <div class="pbody">
+            <fieldset>
+              <legend>Personal Details (as per Aadhaar)</legend>
+              <div class="fgrid">
+                <label for="d-name">Name</label><output id="d-name" class="ro">Ramesh Kumar</output>
+                <label for="d-dob">Date of Birth</label><output id="d-dob" class="ro">12-03-1951</output>
+                <label for="d-gender">Gender</label><output id="d-gender" class="ro">Male</output>
+                <label for="d-mobile">Mobile Number<span class="req" aria-hidden="true">*</span></label><input type="text" id="d-mobile" maxlength="10" inputmode="numeric" autocomplete="off">
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Address Details</legend>
+              <div class="fgrid">
+                <label for="d-state">State<span class="req" aria-hidden="true">*</span></label>
+                <select id="d-state">
+                  <option value="">-- Select State --</option>
+                  <option value="Bihar">Bihar</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Karnataka">Karnataka</option>
+                  <option value="Maharashtra">Maharashtra</option>
+                  <option value="Tamil Nadu">Tamil Nadu</option>
+                  <option value="Uttar Pradesh">Uttar Pradesh</option>
+                  <option value="West Bengal">West Bengal</option>
+                </select>
+                <label for="d-district">District<span class="req" aria-hidden="true">*</span></label>
+                <select id="d-district" disabled><option value="">-- Select District --</option></select>
+                <label for="d-ward">Ward/Village<span class="req" aria-hidden="true">*</span></label>
+                <select id="d-ward" disabled><option value="">-- Select Ward/Village --</option></select>
+                <label for="d-address">Address<span class="req" aria-hidden="true">*</span></label>
+                <input type="text" id="d-address" maxlength="150" autocomplete="off">
+              </div>
+            </fieldset>
+            <p class="hint">Fields marked <span class="req">*</span> are mandatory. Name, date of birth and gender are taken from Aadhaar and cannot be changed here.</p>
+            <div class="actions"><button type="button" id="btn-save-details" class="btn">Save &amp; Continue</button></div>
+          </div>
+        </section>
+
+        <!-- 7. photo -->
+        <section class="pstep panel" id="step-photo" data-step="photo" hidden>
+          <h2>Upload Photograph</h2>
+          <div class="pbody">
+            <div class="photorow">
+              <div class="photobox">
+                <span id="photo-empty">No photo selected</span>
+                <img id="photo-preview" alt="Selected photograph" hidden>
+              </div>
+              <div class="photoctl">
+                <ul class="rules">
+                  <li>Face should be clearly visible, looking straight at the camera.</li>
+                  <li>Plain, light background. No cap or dark glasses.</li>
+                  <li>File type: JPG or PNG.</li>
+                </ul>
+                <div class="frow">
+                  <label class="flabel narrow" for="photo-input">Photograph<span class="req" aria-hidden="true">*</span></label>
+                  <div class="fctl"><input type="file" id="photo-input" accept="image/*" capture="user"></div>
+                </div>
+                <div class="frow">
+                  <span class="flabel narrow"></span>
+                  <div class="fctl"><a href="#" id="btn-sample-photo" class="plink">Use sample photo (practice)</a></div>
+                </div>
+                <div class="frow">
+                  <span class="flabel narrow"></span>
+                  <div class="fctl"><button type="button" id="btn-upload-photo" class="btn">Upload Photo</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. review -->
+        <section class="pstep panel" id="step-review" data-step="review" hidden>
+          <h2>Review Application</h2>
+          <div class="pbody">
+            <p class="hint">Check the details below. You cannot change them after submission.</p>
+            <div class="reviewrow">
+              <dl id="review-summary" class="rdl"></dl>
+              <img id="review-photo" class="rphoto" alt="Uploaded photograph" hidden>
+            </div>
+            <div class="chkrow">
+              <input type="checkbox" id="declare-check">
+              <label for="declare-check">I declare that the information given above is true.</label>
+            </div>
+            <div class="actions"><button type="button" id="btn-submit" class="btn">Submit Application</button></div>
+          </div>
+        </section>
+
+        <!-- 9. done -->
+        <section class="pstep panel" id="step-done" data-step="done" hidden>
+          <h2>Application Submitted</h2>
+          <div class="pbody">
+            <div class="success">
+              <p><strong>Your application has been submitted successfully.</strong></p>
+              <table class="kv">
+                <tr><th>Reference Number</th><td><strong id="ref-no"></strong></td></tr>
+                <tr><th>Status</th><td id="app-status">Pending approval</td></tr>
+              </table>
+              <p class="hint">Please note the reference number for future use. Approval usually takes 7 to 15 working days. An SMS will be sent to the registered mobile number when the card is approved.</p>
+            </div>
+            <div class="actions"><button type="button" id="btn-new" class="btn">Start new application</button></div>
+          </div>
+        </section>
+      </main>
+
+      <aside class="side" aria-label="Instructions">
+        <div class="panel">
+          <h2>Important Instructions</h2>
+          <ol class="sidelist">
+            <li>Keep your Aadhaar card and the Aadhaar-linked mobile phone with you.</li>
+            <li>OTP is valid for 2 minutes only.</li>
+            <li>Do not press Back or refresh the page during enrolment.</li>
+            <li>Your session will expire after <span id="idle-note">3 minutes</span> of inactivity. Unsaved details will be lost.</li>
+            <li>Captcha is not case sensitive.</li>
+          </ol>
+        </div>
+        <div class="panel">
+          <h2>Documents Required</h2>
+          <ul class="sidelist">
+            <li>Aadhaar number</li>
+            <li>Mobile number linked with Aadhaar</li>
+            <li>Recent passport-size photograph</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <footer class="pfoot">
+    <div class="wrap">
+      <p>Practice copy built for usability research on health enrolment portals. It is not affiliated with any government body. All names, numbers and records shown are fictional.</p>
+      <p>Best viewed in Google Chrome at 1024 &times; 768 resolution or higher. &nbsp;|&nbsp; Last updated: 14-11-2026</p>
+    </div>
+  </footer>
+</div>
+
+<div id="loading" hidden>
+  <div class="lbox"><span class="spin" aria-hidden="true"></span>Please wait...</div>
+</div>
+
+<div id="session-modal" role="dialog" aria-modal="true" aria-labelledby="session-text" hidden>
+  <div class="mbox">
+    <p id="session-text" class="mbody">Your session has expired. Please login again.</p>
+    <div class="mfoot"><button type="button" id="session-ok" class="btn">OK</button></div>
+  </div>
+</div>
+
+<div id="demo-sms" role="status" hidden></div>
+</body>
+</html>

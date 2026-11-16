@@ -4,103 +4,318 @@
   <meta charset="utf-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
   <meta name="referrer" content="no-referrer">
-  <meta name="robots" content="noindex, nofollow">
+  <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Steady</title>
+  <meta name="description" content="Steady is a free Chrome helper for older people, built first for Parkinson’s: a one-minute check, then large read-aloud steps on health forms. Aadhaar, OTP and Submit stay theirs.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta name="theme-color" content="#0E1A3A">
+  <title>Steady · Help a parent over 70 through government health forms</title>
+  <link rel="canonical" href="__SITE__/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Steady">
+  <meta property="og:title" content="Steady · Help a parent over 70 through government health forms">
+  <meta property="og:description" content="Steady is a free Chrome helper for older people, built first for Parkinson’s: a one-minute check, then large read-aloud steps on health forms. Aadhaar, OTP and Submit stay theirs.">
+  <meta property="og:url" content="__SITE__/">
+  <meta property="og:image" content="__SITE__/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Steady: government health forms, steadied for older hands and eyes.">
+  <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Steady · Help a parent over 70 through government health forms">
+  <meta name="twitter:description" content="Steady is a free Chrome helper for older people, built first for Parkinson’s: a one-minute check, then large read-aloud steps on health forms. Aadhaar, OTP and Submit stay theirs.">
+  <meta name="twitter:image" content="__SITE__/img/og.png">
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/steady.css">
-  <script src="js/core.js"></script>
+  <script type="application/ld+json">
+[
+ {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Steady",
+  "url": "__SITE__/",
+  "description": "Steady is a free Chrome helper that guides older people, first of all people living with Parkinson’s, through government health forms: large text, read aloud in Hindi or English, safe steps done after a yes, private steps left to them.",
+  "inLanguage": "en-IN"
+ },
+ {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Steady helper",
+  "applicationCategory": "AccessibilityApplication",
+  "operatingSystem": "Google Chrome (desktop)",
+  "url": "__SITE__/",
+  "image": "__SITE__/img/og.png",
+  "description": "Steady is a free Chrome helper that guides older people, first of all people living with Parkinson’s, through government health forms: large text, read aloud in Hindi or English, safe steps done after a yes, private steps left to them.",
+  "offers": {
+   "@type": "Offer",
+   "price": "0",
+   "priceCurrency": "INR"
+  },
+  "availableLanguage": [
+   "en",
+   "hi"
+  ],
+  "featureList": [
+   "One-minute check of tapping, steadiness and reading",
+   "Large-text, read-aloud steps in Hindi or English",
+   "Safe steps done after a yes; Aadhaar, OTP, captcha and Submit left to the person",
+   "Struggle detection that offers more help",
+   "Optional AI planner on a masked page, with guardrails",
+   "No servers; nothing stored from websites"
+  ]
+ },
+ {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+   {
+    "@type": "Question",
+    "name": "What is Steady?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Steady is a free Chrome helper for older people, built first for people living with Parkinson’s. After a one-minute check of tapping, steadiness and reading, it shows each step of a government health form in large text, reads it aloud in Hindi or English, and does the safe steps after a yes."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "Does Steady fill in Aadhaar, OTP or captcha?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "No. Aadhaar, OTPs, captchas, consent and the final Submit are always done by the person, on a large keypad inside the helper. The helper only does safe steps, such as choosing from a list, pressing Next, or trying again when the server is busy."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "Where does the AI come in?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "On a portal with verified steps, the helper follows them. On any other website, an optional AI planner (Claude) suggests one next step at a time from a masked description of the page: labels and whether fields are filled, never what was typed or any numbers. Guardrails block anything private."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "Is my data stored or sent anywhere?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "There are no servers of ours. The one-minute check stays in your browser. Answers saved on the practice portal are encrypted on the device and deleted after the application, or after 7 days. Nothing from other websites is stored."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "Does it work on the real government portal today?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Not yet. Today it works fully on a practice copy of a 70+ enrolment portal, and in a lighter mode on any website you open it on. Real portals need verified steps, which are added one portal at a time after a manual check."
+    }
+   }
+  ]
+ }
+]
+  </script>
 </head>
 <body>
-  <header class="masthead">
-    <a class="wordmark" href="index.html" aria-label="Steady, home">
-      <svg viewBox="0 0 48 24" aria-hidden="true"><rect x="1.5" y="4.5" width="45" height="15" rx="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19 4.5v15M29 4.5v15" stroke="currentColor" stroke-width="1.5" opacity=".55"/><circle cx="24" cy="12" r="4.25" fill="currentColor"/></svg>
-      Steady
-    </a>
-    <nav aria-label="Main">
-      <a href="index.html" aria-current="page">Study hub</a>
-      <a href="demo.html">Side-by-side demo</a>
-      <a href="calibrate.html">Calibrate</a>
-      <a href="facilitator.html" target="steady-facilitator">Facilitator view</a>
-    </nav>
-  </header>
+  <a class="skip-link" href="#main">Skip to the content</a>
+  <div class="hero-panel">
+    <header class="masthead in-hero">
+      <a class="wordmark" href="index.html" aria-label="Steady, home">
+        <img class="logo-mark" src="img/logo.svg" alt="" width="34" height="34" style="width:34px;height:34px;border-radius:9px;flex:none">
+        Steady
+      </a>
+      <nav aria-label="Main">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="calibrate.html">One-minute check</a>
+        <a href="get.html">Get the helper</a>
+        <a href="portal/index.html">Practice portal</a>
+        <a href="hub.html">Study hub</a>
+      </nav>
+    </header>
 
-  <main class="page">
-    <div class="hub">
-      <section aria-labelledby="hub-title">
-        <h1 id="hub-title">The interface adjusts to your hand.</h1>
-        <p class="lede">A one-minute check measures how you point and click. Steady then makes small calendars, sliders and drag-and-drop larger, separated and forgiving.</p>
-
-        <ol class="steps">
-          <li>
-            <div>
-              <h2>Fit Steady to your hand</h2>
-              <p id="profile-line" class="profile-line">No calibration yet. Steady will use standard large settings.</p>
-              <div id="devices-wrap" hidden style="margin:0 0 16px">
-                <span class="field" id="dev-label" style="display:block;margin-bottom:6px">Device</span>
-                <div class="segmented" role="group" aria-labelledby="dev-label" id="devices"></div>
-              </div>
-              <div class="row">
-                <a class="btn primary" id="cal-btn" href="calibrate.html">Start the one-minute check</a>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div>
-              <h2>Choose the study condition</h2>
-              <p>Run each task under all three conditions, in the order your Latin square gives.</p>
-              <div class="segmented" role="group" aria-label="Condition" id="cond">
-                <button class="btn" type="button" data-v="original">Original</button>
-                <button class="btn" type="button" data-v="fixed">Fixed accessible</button>
-                <button class="btn" type="button" data-v="personal">Fitted to you</button>
-              </div>
-              <div class="row" style="margin-top:18px;align-items:start">
-                <label class="field">Participant
-                  <input class="text" id="pid" value="P01" size="6" autocomplete="off">
-                </label>
-                <div class="field">
-                  <span id="var-label">Task variant</span>
-                  <div class="segmented" role="group" aria-labelledby="var-label" id="variant">
-                    <button class="btn" type="button" data-v="1">A</button>
-                    <button class="btn" type="button" data-v="2">B</button>
-                    <button class="btn" type="button" data-v="3">C</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div>
-              <h2>Run a task</h2>
-              <p>Open the facilitator view in a second window first. It counts errors live.</p>
-              <div class="tasks">
-                <a class="task-link" id="go-book" href="book.html">
-                  <div><strong>Book an appointment</strong><span>Date, time, reminder slider, confirm</span></div>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </a>
-                <a class="task-link" id="go-week" href="week.html">
-                  <div><strong>Plan the medicine week</strong><span>Drag four medicines into time slots</span></div>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </a>
-              </div>
-            </div>
-          </li>
-        </ol>
-      </section>
-
-      <aside class="aside" aria-labelledby="sessions-title">
-        <h2 id="sessions-title">Sessions on this computer</h2>
-        <p>Each task run is logged here, on this device only. Nothing is sent anywhere.</p>
-        <div id="sessions"></div>
-        <div class="row" style="margin-top:18px">
-          <button class="btn" type="button" id="export">Export CSV</button>
-          <button class="btn quiet" type="button" id="wipe">Delete everything</button>
+    <section class="hero" aria-labelledby="hero-title">
+      <div>
+        <p class="kicker">For sons, daughters and anyone helping a parent over 70</p>
+        <h1 id="hero-title">Set this up for your parent.</h1>
+        <p class="hero-sub">Then they can work through a government health form at their own pace. Each step appears in <b>large text</b> and is <b>read aloud in Hindi or English</b>. The fiddly clicks are done for them, after they say yes. The private steps stay theirs.</p>
+        <div class="hero-ctas">
+          <a class="btn lime" href="calibrate.html">Start the one-minute check <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn on-blue" href="get.html">Get the helper extension</a>
         </div>
-      </aside>
-    </div>
+        <p class="hero-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.5v.01"/></svg><span>Works fully on a practice copy of the portal, and in a lighter mode on any website. Real portals need verified adapters.</span></p>
+        <p class="phone-note">On a phone? Read on here, then do the check on the laptop your parent will use. It needs their mouse or trackpad.</p>
+      </div>
+      <figure class="hero-photo">
+        <img src="img/hands-laptop.jpg" width="1100" height="1300" alt="Two hands resting on a laptop keyboard in soft evening light">
+        <figcaption>Photo: <a href="https://unsplash.com/@magellol" rel="noopener">Thomas Lefebvre</a> on <a href="https://unsplash.com/photos/gp8BLyaTaA0" rel="noopener">Unsplash</a></figcaption>
+        <a class="badge" href="calibrate.html" aria-label="Start the one-minute check">
+          <svg class="ring" viewBox="0 0 148 148" aria-hidden="true"><defs><path id="badge-circle" d="M74,74 m-56,0 a56,56 0 1,1 112,0 a56,56 0 1,1 -112,0"/></defs><text textLength="350" lengthAdjust="spacing"><textPath href="#badge-circle" textLength="350" lengthAdjust="spacing">ONE-MINUTE CHECK · NO SCORES · ON YOUR COMPUTER ·</textPath></text></svg>
+          <span class="core"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </a>
+      </figure>
+    </section>
+  </div>
+
+  <main class="page landing" id="main">
+    <section class="band" aria-labelledby="problem-h">
+      <div class="band-grid">
+        <div>
+          <p class="eyebrow">The problem</p>
+          <h2 id="problem-h">About 6 crore people over 70 are eligible. Fewer than 1 in 4 have the card.</h2>
+          <p class="band-lede">The government’s health card for people over 70 doesn’t depend on income. Part of what stands in the way is the application form itself. For anyone with an unsteady hand or tired eyes, it has:</p>
+          <ul class="pains">
+            <li><b>Captchas</b> of six bent, crowded letters to copy, on more than one screen.</li>
+            <li><b>OTPs sent to the phone linked to Aadhaar</b>, which is often a son’s or daughter’s, sometimes in another city.</li>
+            <li><b>Sessions that expire</b> if the page sits idle while someone fetches that code, and clear everything typed so far.</li>
+            <li><b>Small text and small boxes</b>, and state, district and ward lists that open only one after another.</li>
+          </ul>
+        </div>
+        <div class="evidence">
+          <p class="figure-card"><strong>1.36 crore</strong><span>of about 6 crore eligible people over 70 had the card as of September 2026.</span><small>Source: Press Information Bureau (PIB)</small></p>
+          <figure class="voice">
+            <blockquote><p>“the many many Captcha got my eyes red and paining”</p></blockquote>
+            <figcaption>Google Play review of the official enrolment app, November 2024</figcaption>
+          </figure>
+          <figure class="voice">
+            <blockquote><p>“…completely impossible for my 88yr old dad who I was trying to help register from his phone.”</p></blockquote>
+            <figcaption>Google Play review of the same app, January 2025</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="how" aria-labelledby="how-h">
+      <p class="eyebrow">How it works</p>
+      <h2 id="how-h">You set it up once. Then they take it from there.</h2>
+      <ol class="how">
+        <li>
+          <span class="how-n" aria-hidden="true">1</span>
+          <h3>A one-minute check on this laptop</h3>
+          <p>Your parent clicks 14 dots, rests the pointer in a circle, and reads numbers as they get smaller. There are no scores. Steady then sets button size, the gap between buttons and text size, and gives a reason for each.</p>
+          <p class="how-tip">Use the laptop, mouse and glasses they normally use.</p>
+          <a class="btn primary" href="calibrate.html">Start the one-minute check</a>
+        </li>
+        <li>
+          <span class="how-n" aria-hidden="true">2</span>
+          <h3>Install the helper extension</h3>
+          <p>It’s an extension for Google Chrome. For now you load it from a folder, which takes about five minutes. The install page walks you through it and shows when it’s working. It copies the settings from the check. There’s no account to make.</p>
+          <a class="btn" href="get.html">Get the helper extension</a>
+        </li>
+        <li>
+          <span class="how-n" aria-hidden="true">3</span>
+          <h3>Open the portal together</h3>
+          <p>The helper shows each step in large text and reads it aloud in Hindi or English. It does the safe steps, like choosing from a list or pressing Next, only after a yes. Your parent does the private steps.</p>
+          <a class="btn" href="portal/index.html">Try the practice portal</a>
+        </li>
+      </ol>
+
+      <div class="on-portal">
+        <figure class="illus">
+          <div class="illus-stage" aria-hidden="true">
+            <div class="illus-portal">
+              <span class="ip-bar">Beneficiary Portal · Address details</span>
+              <span class="ip-label">State <i>*</i></span>
+              <span class="ip-select">Bihar <i>▾</i></span>
+              <span class="ip-label">District <i>*</i></span>
+              <span class="ip-select">Patna <i>▾</i></span>
+              <span class="ip-label">Ward/Village <i>*</i></span>
+              <span class="ip-select">Ward 3 <i>▾</i></span>
+              <span class="ip-btn">Save &amp; Continue</span>
+            </div>
+            <div class="illus-card">
+              <span class="ic-k">Step 6 of 9 · Address</span>
+              <strong>Shall I press Save &amp; Continue for you?</strong>
+              <span lang="hi">क्या मैं आपके लिए Save &amp; Continue दबा दूँ?</span>
+              <span class="ic-row"><span class="yes">Yes</span><span>I’ll do it</span></span>
+            </div>
+          </div>
+          <figcaption>Illustration: the portal’s own small form, with the helper’s step beside it. The real panel may look different.</figcaption>
+        </figure>
+
+        <div class="split" aria-labelledby="split-h">
+          <h3 id="split-h">On the portal, who does what</h3>
+          <div class="split-cols">
+            <div class="split-col">
+              <h4>The helper does, after a yes</h4>
+              <ul class="ticks">
+                <li>Shows the step in large text and reads it aloud</li>
+                <li>Chooses state, district and ward from the lists</li>
+                <li>Presses Next, Continue and Proceed</li>
+                <li>Says who to ask for the OTP: “Ask Rahul for the code sent to the phone ending 4321”</li>
+              </ul>
+            </div>
+            <div class="split-col theirs">
+              <h4>Your parent does</h4>
+              <ul class="ticks">
+                <li>Types the Aadhaar number</li>
+                <li>Reads and types the captcha</li>
+                <li>Types the OTP</li>
+                <li>Ticks the consent box</li>
+                <li>Presses the final Submit</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="limits-h">
+      <div class="band-grid">
+        <div>
+          <p class="eyebrow">Limits</p>
+          <h2 id="limits-h">What it will not do</h2>
+          <ul class="nots">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg><span><b>It never solves a captcha.</b> It doesn’t read or guess the letters. Your parent types them.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg><span><b>It never submits without a yes.</b> Every click it makes waits for a yes, and the final Submit is always pressed by your parent.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg><span><b>It never sends the Aadhaar number anywhere.</b> Its optional AI help gets a masked description of the form, with no Aadhaar, OTP, name, phone or answers. The number is kept on this computer only if you agree, encrypted, and deleted after the application or 7 days.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg><span><b>No account, and no servers of ours.</b> Settings stay in this browser and in the extension. <a href="privacy.html">How your data is handled</a></span></li>
+          </ul>
+        </div>
+        <aside class="honest" aria-labelledby="honest-h">
+          <h3 id="honest-h">Where it works today</h3>
+          <p class="honest-line">Today it works fully on a practice copy of the portal, and in a lighter mode on any website: click the Steady icon there. Real portals need verified adapters.</p>
+          <p>An adapter is a checked map of one portal’s pages and fields. Until a real portal has one, use the practice copy to go through the steps together. It has the same captchas, OTPs and timeouts, and nothing typed into it leaves the computer.</p>
+          <a class="btn" href="portal/index.html">Try the practice portal</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="band who" aria-labelledby="who-h">
+      <p class="eyebrow">Who it is for</p>
+      <h2 id="who-h">Built first for people living with Parkinson’s</h2>
+      <div class="who-text">
+        <p>A hand that shakes, movements that are slow to start, eyes that tire: each one makes a captcha box or a ward list harder. The check doesn’t ask about any of that. It measures how the mouse and the text work for this person today, and sizes the screen to match. So it works the same for anyone over 70 whose hands or eyes make these forms hard, and nothing on screen labels them.</p>
+        <p>Many people have better and worse hours, for example as a dose of medicine wears off. On a harder day, run the check again. It takes a minute and replaces the old settings.</p>
+      </div>
+    </section>
+
+    <section class="band" id="faq" aria-labelledby="faq-h">
+      <p class="eyebrow">Questions</p>
+      <h2 id="faq-h">Common questions</h2>
+      <div class="faq">
+        <details class="faq-item"><summary><h3>What is Steady?</h3></summary><p>Steady is a free Chrome helper for older people, built first for people living with Parkinson’s. After a one-minute check of tapping, steadiness and reading, it shows each step of a government health form in large text, reads it aloud in Hindi or English, and does the safe steps after a yes.</p></details>
+        <details class="faq-item"><summary><h3>Does Steady fill in Aadhaar, OTP or captcha?</h3></summary><p>No. Aadhaar, OTPs, captchas, consent and the final Submit are always done by the person, on a large keypad inside the helper. The helper only does safe steps, such as choosing from a list, pressing Next, or trying again when the server is busy.</p></details>
+        <details class="faq-item"><summary><h3>Where does the AI come in?</h3></summary><p>On a portal with verified steps, the helper follows them. On any other website, an optional AI planner (Claude) suggests one next step at a time from a masked description of the page: labels and whether fields are filled, never what was typed or any numbers. Guardrails block anything private.</p></details>
+        <details class="faq-item"><summary><h3>Is my data stored or sent anywhere?</h3></summary><p>There are no servers of ours. The one-minute check stays in your browser. Answers saved on the practice portal are encrypted on the device and deleted after the application, or after 7 days. Nothing from other websites is stored.</p></details>
+        <details class="faq-item"><summary><h3>Does it work on the real government portal today?</h3></summary><p>Not yet. Today it works fully on a practice copy of a 70+ enrolment portal, and in a lighter mode on any website you open it on. Real portals need verified steps, which are added one portal at a time after a manual check.</p></details>
+      </div>
+    </section>
+
+    <section class="cta-band" aria-labelledby="cta-h">
+      <h2 id="cta-h">Start with the one-minute check</h2>
+      <p>Do it on the laptop your parent will use, with their usual mouse or trackpad. You can skip any part.</p>
+      <div class="row">
+        <a class="btn lime" href="calibrate.html">Start the one-minute check</a>
+        <a class="btn on-navy" href="get.html">Get the helper extension</a>
+        <a class="btn on-navy" href="portal/index.html">Try the practice portal</a>
+      </div>
+    </section>
   </main>
 
-  <script src="js/metrics.js"></script>
-  <script src="js/hub.js"></script>
+  <footer class="site-foot">
+    <p><b>Steady</b>. Settings stay on this computer.</p>
+    <nav aria-label="Footer">
+      <a href="hub.html">Research study hub</a>
+      <a href="privacy.html">Your data</a>
+    </nav>
+  </footer>
 </body>
 </html>

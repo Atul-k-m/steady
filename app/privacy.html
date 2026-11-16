@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta name="theme-color" content="#0E1A3A">
+  <meta name="description" content="How Steady handles data: no servers of ours, settings stay in your browser, saved answers are encrypted and deleted after 7 days, and the optional AI sees only a masked page.">
+  <title>Your data · Steady</title>
+  <link rel="canonical" href="__SITE__/privacy.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Steady">
+  <meta property="og:title" content="Your data · Steady">
+  <meta property="og:description" content="How Steady handles data: no servers of ours, settings stay in your browser, saved answers are encrypted and deleted after 7 days, and the optional AI sees only a masked page.">
+  <meta property="og:url" content="__SITE__/privacy.html">
+  <meta property="og:image" content="__SITE__/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Steady: government health forms, steadied for older hands and eyes.">
+  <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Your data · Steady">
+  <meta name="twitter:description" content="How Steady handles data: no servers of ours, settings stay in your browser, saved answers are encrypted and deleted after 7 days, and the optional AI sees only a masked page.">
+  <meta name="twitter:image" content="__SITE__/img/og.png">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/steady.css">
+</head>
+<body>
+  <header class="masthead">
+    <a class="wordmark" href="index.html" aria-label="Steady, home">
+      <img class="logo-mark" src="img/logo.svg" alt="" width="34" height="34" style="width:34px;height:34px;border-radius:9px;flex:none">
+      Steady
+    </a>
+    <nav aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="calibrate.html">One-minute check</a>
+      <a href="get.html">Get the helper</a>
+      <a href="portal/index.html">Practice portal</a>
+      <a href="hub.html">Study hub</a>
+    </nav>
+  </header>
+
+  <main class="page prose">
+    <h1>How Steady handles your data</h1>
+    <p class="lede">Short version: Steady has no servers. What the check measures and what you choose stay on this computer. The only thing that can leave it is a masked description of a form, and only if you add an AI key yourself.</p>
+
+    <h2>What the one-minute check measures</h2>
+    <ul class="reasons">
+      <li><span>•</span><span>How far your clicks land from the dots, and how far the pointer moves while the button is down.</span></li>
+      <li><span>•</span><span>Whether a press came twice.</span></li>
+      <li><span>•</span><span>How much, and how fast, the pointer moves while you hold it still.</span></li>
+      <li><span>•</span><span>The smallest numbers you read correctly, and how many you were shown.</span></li>
+      <li><span>•</span><span>In some study sessions only: whether a dragged card reached the box, and how long it took.</span></li>
+    </ul>
+    <p>Only summary numbers are kept, such as “clicks land within about 9 px” or “reads down to 14 px”. Your individual clicks and answers are not saved. You can see every number Steady keeps under <b>What was measured</b> on the results page.</p>
+
+    <h2>Your preferences</h2>
+    <p>The language, whether steps are read aloud, and, if you fill them in, the first name and the last 4 digits of the phone that receives OTP codes. These are used only to say something like “Ask Rahul for the code sent to the phone ending 4321”. Both are optional, and neither leaves this computer.</p>
+
+    <h2>Where it is kept</h2>
+    <p>In this browser’s storage on this computer. When the helper extension is installed, it copies your settings from this site into the extension’s own storage: when you open one of these pages, and again when you save the check. These pages are built so they cannot send data anywhere: their security policy blocks every network connection.</p>
+    <p>The measurements could hint at a health condition. So, when the extension adapts other websites, those sites receive only the resulting sizes and switches, such as “buttons 72 px”. They never receive the measurements themselves.</p>
+
+    <h2>On the portal: the progress vault</h2>
+    <p>Portals clear the form when a session times out. So the helper keeps a note of your progress on this computer, encrypted, in the extension’s storage. The Aadhaar number is saved in it only if you agree when the helper asks. Everything in the vault is deleted after the application is submitted, or after 7 days, whichever comes first.</p>
+    <p>The helper never solves captchas and never reads OTP messages. You type the Aadhaar number, the OTP and the captcha yourself.</p>
+
+    <h2>Optional AI help</h2>
+    <p>The helper follows a checked map of the portal’s steps, which runs entirely on this computer. It asks an AI model for help only if you add an API key in the extension’s options page. That key is never entered on this website.</p>
+    <p>With a key added, when the helper meets a page it doesn’t recognise, it sends a masked description of that page to the AI service whose key you entered: the field labels, which fields are filled (not what is in them), and error messages with every number removed. It never sends your Aadhaar number, an OTP, your name, your phone number or any answer you typed. That service’s own privacy terms apply to what it receives.</p>
+
+    <h2>Read aloud and voice input</h2>
+    <p>Read aloud uses the voices in your browser. Most run on the computer. In Chrome, voices whose names start with “Google” are produced online by Google, so the sentence being read goes to Google. Choose another voice if you prefer.</p>
+    <p>Voice input is off unless you turn it on. Chrome’s speech recognition sends the audio to Google to turn it into text.</p>
+
+    <h2>No servers of ours</h2>
+    <p>There’s no account and nothing to sign up for. Steady’s pages are files served as they are; they don’t collect analytics and don’t set cookies.</p>
+
+    <h2>If you take part in a study</h2>
+    <p>During study tasks, Steady keeps a task log on this computer: which choices were right or wrong, misses, slips, repeats and time taken. It has no name in it, only the participant code the facilitator types. It leaves this computer only when the facilitator exports it as a file. Your consent form explains how the research team uses that file.</p>
+
+    <h2>Deleting it</h2>
+    <p>In the <a href="hub.html">research study hub</a>, <b>Delete everything</b> removes every saved profile and task log from this browser. Removing the extension from <code>chrome://extensions</code> deletes its storage, including the vault. Clearing this site’s data in your browser does the same for the website’s copy.</p>
+
+    <h2>Questions</h2>
+    <p>Ask the team that gave you Steady, or the study team running your session.</p>
+  </main>
+</body>
+</html>
