@@ -181,7 +181,7 @@ ol.log{margin:4px 0 0;padding-left:1.2em;max-height:160px;overflow:auto}ol.log l
       <div class="panel" role="complementary" aria-label="${tr('helper')}">
         <header>
           <span class="brand"><i aria-hidden="true"></i>${tr('helper')}</span>
-          <button type="button" data-act="lang" aria-label="Language / भाषा">${L() === 'hi' ? 'English' : 'हिन्दी'}</button>
+          <button type="button" data-act="lang" aria-label="Language / भाषा / ಭಾಷೆ" lang="${A.nextLang(L())}">${A.LANG_LABEL[A.nextLang(L())]}</button>
           <button type="button" data-act="speak">${tr('readAloud')}</button>
           <button type="button" data-act="hide">${tr('showOriginal')}</button>
           <button type="button" class="stop" data-act="stop">${stopped ? tr('resume') : tr('stop')}</button>
@@ -216,18 +216,38 @@ ol.log{margin:4px 0 0;padding-left:1.2em;max-height:160px;overflow:auto}ol.log l
     R('meta').textContent = `${brain} · ${FM ? FM.id + ' v' + FM.version + ' · ' : ''}${m ? m.id : 'struggle model: built-in'} · AI ${opts.aiFallback && opts.hasKey ? 'on (Claude, masked page only)' : 'off'}`;
     R('log').innerHTML = actions.slice(-30).map((a) => `<li>${a.who === 'you' ? '✋' : a.who === 'ai' ? '✦' : '✓'} ${S.esc ? S.esc(a.text) : a.text}</li>`).join('');
   }
+  // Chromium loads voices late: wait once, so a Hindi or Kannada voice isn't missed on the first sentence.
+  const voicesReady = new Promise((res) => {
+    if (!('speechSynthesis' in self) || speechSynthesis.getVoices().length) return res();
+    speechSynthesis.addEventListener('voiceschanged', () => res(), { once: true });
+    setTimeout(res, 1500);
+  });
+  const voiceWarned = {};
   function say(text) {
     const live = R('live'); if (live) live.textContent = text;
-    if (!prefs.voice || !('speechSynthesis' in self)) return;
-    try {
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = L() === 'hi' ? 'hi-IN' : 'en-IN';
-      const v = speechSynthesis.getVoices().find((x) => x.lang === u.lang) || speechSynthesis.getVoices().find((x) => x.lang && x.lang.startsWith(L()));
-      if (v) u.voice = v;
-      u.rate = 0.9;
-      speechSynthesis.speak(u);
-    } catch (e) { /* voices unavailable */ }
+    if (!prefs.voice || !('speechSynthesis' in self) || !text) return;
+    const lang = L();
+    voicesReady.then(() => {
+      if (L() !== lang) return;
+      try {
+        speechSynthesis.cancel();
+        const v = A.pickVoice(speechSynthesis.getVoices(), lang);
+        // No voice for this language: show the words, but never hand Hindi or Kannada to an English voice
+        // (that is what came out as random words on a PC with only English voices).
+        if (!v && lang !== 'en') { noVoice(lang); return; }
+        const u = new SpeechSynthesisUtterance(A.speakable(text)); // "Account No." is said "Account number"
+        u.lang = v ? v.lang : 'en-IN';
+        if (v) u.voice = v;
+        u.rate = 0.9;
+        speechSynthesis.speak(u);
+      } catch (e) { /* voices unavailable */ }
+    });
+  }
+  function noVoice(lang) {
+    if (voiceWarned[lang]) return;
+    voiceWarned[lang] = true;
+    note(`No ${A.LANG_LABEL[lang]} voice in this browser: showing text only`);
+    banner('offer', tr('noVoiceTitle', { lang: A.LANG_LABEL[lang] }), tr('noVoiceBody'));
   }
   let lastSpoken = '';
   function card(html, speakText) {
@@ -275,11 +295,13 @@ ol.log{margin:4px 0 0;padding-left:1.2em;max-height:160px;overflow:auto}ol.log l
     if (fn) fn(b);
   }
   const GLOBAL = {
-    stop: () => { stopped = !stopped; if (stopped) { cancelRun(); speechSynthesis && speechSynthesis.cancel(); banner('', ''); card(`<h2>${tr('stopped')}</h2>`, tr('stopped')); } mountPanel(); if (!stopped) schedule(true); },
+    // Redraw the panel first, then write the message: the other way round left an empty panel after Stop.
+    stop: () => { stopped = !stopped; mountPanel(); if (stopped) { cancelRun(); if ('speechSynthesis' in self) speechSynthesis.cancel(); card(`<h2>${tr('stopped')}</h2>`); } else schedule(true); },
     hide: () => { hidden = true; cancelRun(); renderChrome(); },
     show: () => { hidden = false; renderChrome(); schedule(true); },
-    speak: () => { lastSpoken = ''; const c = R('card'); say(c ? c.innerText : ''); },
-    lang: async () => { prefs.lang = L() === 'hi' ? 'en' : 'hi'; await savePrefs(); mountPanel(); schedule(true); },
+    // Read the words on the card, not its keys: reading a captcha keypad aloud ("A, B, C, D…") sounded like random words.
+    speak: () => { lastSpoken = ''; const c = R('card'); say(c ? [...c.querySelectorAll('h2, h3, p, .private')].map((x) => x.innerText.trim()).filter(Boolean).join('. ') : ''); },
+    lang: async () => { prefs.lang = A.nextLang(L()); if ('speechSynthesis' in self) speechSynthesis.cancel(); await savePrefs(); mountPanel(); schedule(true); },
     mode: () => modePicker(),
   };
   async function savePrefs() {
@@ -352,18 +374,27 @@ ol.log{margin:4px 0 0;padding-left:1.2em;max-height:160px;overflow:auto}ol.log l
   function textEntry({ title, body, value }) {
     return prompt(`<span class="private">${tr('privateNote')}</span><h2>${esc(title)}</h2><p>${esc(body || '')}</p>
       <textarea class="display" id="tx" rows="3" aria-label="${esc(title)}">${esc(value || '')}</textarea>
-      <div class="row"><button type="button" class="primary" data-act="ok">${tr('done')}</button></div>`, title, (done) => {
+      <div class="row"><button type="button" class="primary" data-act="ok">${tr('done')}</button></div>`, [title, body].filter(Boolean).join('. '), (done) => {
       const tx = R('tx');
       tx.addEventListener('input', (e) => logEvent(e.inputType && e.inputType.startsWith('delete') ? 'correction' : 'char'));
       on('ok', () => { if (tx.value.trim()) done(tx.value.trim()); });
     });
   }
-  const LETTERS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'.split('');
+  const LETTERS = A.CAPTCHA_KEYS; // all of A-Z and 0-9: BESCOM's captchas use 0, 1, I and O too
+  // The picture as a URL the panel can show. Canvas captchas (BESCOM) have no src; SVG ones are serialised.
+  function imageSrc(el) {
+    if (!el) return '';
+    if (el.tagName === 'CANVAS') { try { return el.toDataURL('image/png'); } catch (e) { return ''; } }
+    if (el.tagName && el.tagName.toLowerCase() === 'svg') { try { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(el)); } catch (e) { return ''; } }
+    return el.currentSrc || el.src || '';
+  }
   function captchaEntry(task) {
-    const imgOf = () => task.imgEl || $(task.img);
-    const img = imgOf();
+    // Find the picture again every time: some sites (BESCOM) replace the whole canvas when they make a new captcha.
+    const imgOf = () => (task.field && task.field.isConnected ? nearbyImage(task.field) : null) || (task.imgEl && task.imgEl.isConnected ? task.imgEl : null) || $(task.img);
+    const img = imgOf(), src = imageSrc(img);
+    if (img && !src) highlight(img);
     return prompt(`<span class="private">${tr('privateNote')}</span><h2>${tr('captchaTitle')}</h2><p>${tr('captchaBody')}</p>
-      <img class="captcha" id="cap" alt="${tr('captchaTitle')}" src="${img ? img.src : ''}">
+      <img class="captcha" id="cap" alt="${tr('captchaTitle')}" src="${src}" ${src ? '' : 'hidden'}>${src ? '' : `<p class="note" id="caplook">${tr('captchaLookPage')}</p>`}
       <div class="row"><button type="button" data-act="newpic">${tr('newPicture')}</button><button type="button" data-act="zoom">${tr('zoom')}</button></div>
       <input class="display" id="cx" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="${tr('captchaTitle')}" maxlength="8">
       <div class="keys" style="--cols:6">${LETTERS.map((k) => `<button type="button" data-act="l-${k}">${k}</button>`).join('')}<button type="button" data-act="l-del" aria-label="${tr('back')}">⌫</button></div>
@@ -376,11 +407,12 @@ ol.log{margin:4px 0 0;padding-left:1.2em;max-height:160px;overflow:auto}ol.log l
       on('l-del', () => { cx.value = cx.value.slice(0, -1); logEvent('correction'); draw(); });
       on('zoom', () => cap.classList.toggle('big'));
       on('newpic', async () => {
-        const old = img && img.src;
-        const ref = task.refreshEl || $(task.refresh);
+        const old = imageSrc(imgOf());
+        const ref = (task.refreshEl && task.refreshEl.isConnected ? task.refreshEl : null) || (task.field ? nearbyRefresh(task.field) : null) || $(task.refresh);
         if (ref) agentClick(ref);
-        await waitFor(() => imgOf() && imgOf().src !== old, 3000);
-        cap.src = imgOf() ? imgOf().src : '';
+        await waitFor(() => imageSrc(imgOf()) !== old, 3000);
+        const now = imageSrc(imgOf());
+        cap.src = now; cap.hidden = !now;
         cx.value = ''; draw();
         note('New captcha picture', 'you');
       });
@@ -753,28 +785,82 @@ ol.log{margin:4px 0 0;padding-left:1.2em;max-height:160px;overflow:auto}ol.log l
 
   /* ---------- any website: on-device help, plus AI guidance when it is turned on ---------- */
   const aiOn = () => opts.aiFallback && opts.hasKey;
-  let zoomI = 0, fieldBusy = false;
+  let zoomI = 0, fieldBusy = false, lastField = null;
   function labelOf(el) {
-    const l = (el.labels && el.labels[0] && el.labels[0].textContent) || el.getAttribute('aria-label') || el.getAttribute('placeholder') || el.getAttribute('title') || el.name || '';
+    const l = (el.labels && el.labels[0] && el.labels[0].textContent) || el.getAttribute('aria-label') || siblingLabel(el) || el.getAttribute('placeholder') || el.getAttribute('title') || el.name || '';
     if (l.trim()) return l.trim().replace(/\s*\*\s*$/, '').slice(0, 80);
     const prev = el.closest('td, div, p, li') && el.closest('td, div, p, li').previousElementSibling;
-    return prev ? prev.textContent.trim().slice(0, 80) : (L() === 'hi' ? 'यह खाना' : 'this box');
+    return prev ? prev.textContent.trim().slice(0, 80) : ({ hi: 'यह खाना', kn: 'ಈ ಬಾಕ್ಸ್' })[L()] || 'this box';
   }
+  // A <label> without for= sitting next to the box (BESCOM: <label>Account ID</label><input placeholder="Account No.">).
+  function siblingLabel(el) {
+    for (let p = el.previousElementSibling, i = 0; p && i < 3; p = p.previousElementSibling, i++) if (p.tagName === 'LABEL') return p.textContent;
+    const box = el.parentElement;
+    if (box && box.querySelectorAll('input, select, textarea').length === 1) { const l = box.querySelector('label'); if (l) return l.textContent; }
+    return '';
+  }
+  // The captcha picture near a box: captcha-sized, not the logo or an icon; one named "captcha" wins, then a canvas.
   function nearbyImage(el) {
     let box = el;
     for (let i = 0; i < 5 && box; i++, box = box.parentElement) {
-      const img = box.querySelector && box.querySelector('img, canvas');
-      if (img && visible(img)) return img;
+      if (!box.querySelectorAll) continue;
+      const sized = [...box.querySelectorAll('img, canvas, svg')].filter((x) => {
+        if (host.contains(x) || !visible(x)) return false;
+        const r = x.getBoundingClientRect();
+        return r.width >= 50 && r.width <= 420 && r.height >= 18 && r.height <= 160;
+      });
+      const cls = (x) => (x.className && x.className.baseVal != null ? x.className.baseVal : x.className) || '';
+      const named = sized.find((x) => /captcha/i.test([x.id, cls(x), x.alt, x.getAttribute('src'), x.parentElement && x.parentElement.id, x.parentElement && cls(x.parentElement)].join(' ')));
+      const pick = named || sized.find((x) => x.tagName === 'CANVAS') || sized[0];
+      if (pick) return pick;
     }
     return null;
   }
   function nearbyRefresh(el) {
     let box = el;
     for (let i = 0; i < 5 && box; i++, box = box.parentElement) {
-      const r = box.querySelector && [...box.querySelectorAll('a, button, img[onclick]')].find((x) => /refresh|reload|new|change|↻|⟳/i.test(x.textContent + ' ' + (x.title || '') + ' ' + (x.alt || '')));
+      const r = box.querySelectorAll && [...box.querySelectorAll('a, button, [role="button"], img[onclick], span[onclick], i[onclick]')].find((x) => !host.contains(x) &&
+        A.isRefreshControl({ text: x.textContent, title: x.title, alt: x.alt, aria: x.getAttribute('aria-label'), onclick: x.getAttribute('onclick') }));
       if (r) return r;
     }
     return null;
+  }
+  // A "find your account number" style link next to the box, on this same site (BESCOM: "To Find out Account ID? Please Click Here").
+  const STOPW = new Set(['the', 'and', 'for', 'you', 'your', 'please', 'click', 'here', 'enter', 'find', 'out', 'to', 'of', 'in', 'on', 'is', 'it', 'my', 'this', 'an', 'or', 'no', 'know', 'how', 'get', 'what', 'where', 'forgot', 'help', 'type', 'image']);
+  const words = (s) => String(s || '').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 2 && !STOPW.has(w));
+  function helpLink(el, label) {
+    const want = new Set(words(label + ' ' + (el.placeholder || '')));
+    const scope = el.closest('form') || (el.parentElement && el.parentElement.parentElement);
+    if (!scope || !want.size) return null;
+    for (const a of scope.querySelectorAll('a, button, [role="button"]')) {
+      if (host.contains(a) || !visible(a) || a.type === 'submit') continue;
+      const ctx = ((a.closest('p, li, small, label') || a).textContent || '').replace(/\s+/g, ' ').trim();
+      if (!/find|forgot|know|where|don.?t have|how to/i.test(ctx)) continue;
+      try { if (a.href && /^https?:/i.test(a.href) && new URL(a.href).host !== location.host) continue; } catch (e) { continue; }
+      if (words(ctx).some((w) => want.has(w))) return { el: a, text: ctx.replace(/please\s+click\s+here\.?/i, '').trim().slice(0, 60) || ctx.slice(0, 60) };
+    }
+    return null;
+  }
+  // Under every box: "What is this?" (says it again, or asks the AI when the box is new to me), a same-site
+  // "find it" link when the page has one, and Back, so a box tapped by mistake doesn't trap the person.
+  function addHelpRow(el, label, info) {
+    const c = R('card'); if (!c) return;
+    const link = helpLink(el, label);
+    c.insertAdjacentHTML('beforeend', `<div class="row"><button type="button" data-act="why">${tr('whatIsThis')}</button>${link ? `<button type="button" data-act="helplink">${esc(tr('openHelp', { label: link.text }))}</button>` : ''}<button type="button" data-act="cancel">${tr('backHome')}</button></div><p class="note" id="why-out" hidden></p>`);
+    on('why', () => explainBox(el, label, info));
+    on('cancel', () => active && active.resolve(ABORT));
+    if (link) on('helplink', async () => { await highlight(link.el); note(`Opened “${link.text}”`, 'you'); agentClick(link.el); if (active) active.resolve(ABORT); });
+  }
+  async function explainBox(el, label, info) {
+    const out = R('why-out');
+    const show = (text) => { if (out) { out.hidden = false; out.textContent = text; } lastSpoken = ''; say(text); };
+    if (info.known) return show(`${info.name}. ${info.explain}`);
+    if (!aiOn()) return show(info.explain);
+    show(tr('explainAI'));
+    const near = ((el.closest('p, div, td, li') || el).textContent || '').replace(/\s+/g, ' ').slice(0, 200);
+    const res = await ask({ type: 'steady:explainField', lang: L(), host: location.hostname, label: A.maskText(label, known()), placeholder: A.maskText(el.placeholder || '', known()), near: A.maskText(near, known()) });
+    if (!out || !out.isConnected) return;
+    show(res && res.ok ? [res.result.explanation, res.result.where_to_find, res.result.next_step].filter(Boolean).join(' ') : info.explain);
   }
   // Show any field on the page big, with the right widget, then put the answer back into the page.
   async function fieldPrompt(el) {
@@ -783,28 +869,33 @@ ol.log{margin:4px 0 0;padding-left:1.2em;max-height:160px;overflow:auto}ol.log l
     try {
       const meta = { id: el.id, name: el.name, label: labelOf(el), placeholder: el.placeholder, autocomplete: el.autocomplete, type: el.type };
       const kind = A.classifyField(meta), label = meta.label;
+      lastField = el;
+      // Son persona: say what the box is, where the answer comes from and where to find it, not just its label.
+      const info = A.explainField({ label, placeholder: el.placeholder, name: el.name, id: el.id, host: location.hostname }, L());
+      const shown = info.known ? info.name : label, why = info.known ? info.explain : '';
       await highlight(el);
-      let v;
+      let v, p;
       if (el instanceof HTMLSelectElement) {
         const list = [...el.options].filter((o) => o.value !== '' && !o.disabled).map((o) => o.text.trim());
-        v = await choices({ title: tr('chooseTitle', { what: label }), list });
+        p = choices({ title: tr('chooseTitle', { what: shown }), body: why, list }); addHelpRow(el, label, info); v = await p;
         if (v === ABORT) return ABORT;
         setValue(el, [...el.options].find((o) => o.text.trim() === v).value);
       } else if (el.type === 'checkbox' || el.type === 'radio') {
-        v = await yesNo({ title: tr('tickTitle', { label }), yes: tr('tickYes'), no: tr('backHome'), privateStep: A.isPrivate(kind) });
+        v = await yesNo({ title: tr('tickTitle', { label }), body: why, yes: tr('tickYes'), no: tr('backHome'), privateStep: A.isPrivate(kind) });
         if (v !== true) return ABORT;
         if (!el.checked) agentClick(el);
       } else if (kind === 'captcha') {
-        v = await captchaEntry({ imgEl: nearbyImage(el), refreshEl: nearbyRefresh(el) });
+        p = captchaEntry({ field: el, imgEl: nearbyImage(el), refreshEl: nearbyRefresh(el) }); addHelpRow(el, label, info); v = await p;
         if (v === ABORT) return ABORT;
         setValue(el, v);
       } else if (['otp', 'aadhaar'].includes(kind) || ['tel', 'number'].includes(el.type) || el.inputMode === 'numeric' || /pin|mobile|phone/i.test(label)) {
         const max = el.maxLength > 0 ? el.maxLength : kind === 'otp' ? 6 : kind === 'aadhaar' ? 12 : /mobile|phone/i.test(label) ? 10 : 16;
-        v = await keypad({ title: tr('typeFor', { label }), body: kind === 'aadhaar' ? tr('aadhaarBody') : '', len: max, exact: kind === 'otp' || kind === 'aadhaar' ? true : false, privateStep: A.isPrivate(kind) });
+        p = keypad({ title: tr('typeFor', { label: shown }), body: why || (kind === 'aadhaar' ? tr('aadhaarBody') : ''), len: max, exact: kind === 'otp' || kind === 'aadhaar' ? true : false, privateStep: A.isPrivate(kind) });
+        addHelpRow(el, label, info); v = await p;
         if (v === ABORT) return ABORT;
         setValue(el, v);
       } else {
-        v = await textEntry({ title: tr('typeFor', { label }), value: el.value });
+        p = textEntry({ title: tr('typeFor', { label: shown }), body: why, value: el.value }); addHelpRow(el, label, info); v = await p;
         if (v === ABORT) return ABORT;
         setValue(el, v);
       }
@@ -812,11 +903,27 @@ ol.log{margin:4px 0 0;padding-left:1.2em;max-height:160px;overflow:auto}ol.log l
       return true;
     } finally { fieldBusy = false; }
   }
+  // Read the form the person is working on: its title, each box by its plain name with "empty" or "filled in"
+  // (never the value), and the button to press. Reading the whole page read menus and footers: random words.
   function readPage() {
-    const main = document.querySelector('main, [role="main"], article') || document.body;
-    const heads = [...document.querySelectorAll('h1, h2')].filter(visible).map((h) => h.textContent.trim()).slice(0, 4);
-    const text = (main.innerText || '').replace(/\s+/g, ' ').slice(0, 700);
-    lastSpoken = ''; say([document.title, ...heads, text].filter(Boolean).join('. '));
+    const forms = [...document.forms].filter((f) => visible(f) && !host.contains(f));
+    const count = (f) => f.querySelectorAll('input:not([type="hidden"]), select, textarea').length;
+    const form = (lastField && lastField.isConnected && lastField.closest('form')) || forms.sort((a, b) => count(b) - count(a))[0];
+    if (!form || !count(form)) {
+      const heads = [...document.querySelectorAll('h1, h2')].filter(visible).map((h) => h.textContent.trim()).slice(0, 4);
+      lastSpoken = ''; say([document.title, ...heads].filter(Boolean).join('. ')); return;
+    }
+    const head = form.querySelector('h1, h2, h3, legend');
+    const parts = [(head && head.textContent.trim()) || document.title];
+    for (const f of form.querySelectorAll('input, select, textarea')) {
+      if (!visible(f) || ['hidden', 'button', 'submit', 'reset', 'image'].includes(f.type)) continue;
+      const lab = labelOf(f);
+      const info = A.explainField({ label: lab, placeholder: f.placeholder, name: f.name, id: f.id, host: location.hostname }, L());
+      parts.push(`${info.known ? info.name : lab}: ${f.value ? tr('readFilled') : tr('readEmpty')}`);
+    }
+    const btn = [...form.querySelectorAll('button, input[type="submit"]')].filter(visible).map((b) => (b.textContent || b.value || '').trim()).find(Boolean);
+    if (btn) parts.push(tr('readThenPress', { button: btn }));
+    lastSpoken = ''; say(parts.join('. '));
   }
   async function generic(g) {
     const r = await prompt(`<h2>${tr('helperHere')}</h2><p>${tr('genericIntro')}</p>

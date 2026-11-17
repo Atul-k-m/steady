@@ -54,7 +54,21 @@ const EXPLAIN_SCHEMA = {
   },
 };
 
-const langName = (l) => (l === 'hi' ? 'Hindi (Devanagari script)' : 'simple English');
+const langName = (l) => (l === 'hi' ? 'Hindi (Devanagari script)' : l === 'kn' ? 'Kannada (Kannada script)' : 'simple English');
+const FIELD_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['explanation', 'where_to_find', 'next_step'],
+  properties: {
+    explanation: { type: 'string', description: 'What the box is asking for and where that information comes from. Two short sentences.' },
+    where_to_find: { type: 'string', description: 'Where the person can find it at home (a bill, a card, an SMS), or "" if unsure.' },
+    next_step: { type: 'string', description: 'One short sentence: what to do now.' },
+  },
+};
+// Son persona: patient, warm, concrete; explains the "why" and "where to find it", never just repeats the label.
+const fieldSystem = (lang) => `You are the explaining voice of an accessibility helper for older people in India. Talk like a patient grown-up son sitting next to his parent at the computer: warm, respectful, simple words, no jargon, no rushing. The person has tapped a box on a website and asked "What is this?".
+Explain what the box is asking for, where that information comes from (for example, a number the company created when the account or connection was first set up), and where they can find it at home (bill, card, passbook, SMS). If you are not sure for this website, say so and suggest the website's help link or helpline. Never invent numbers, digit counts or phone numbers that are not in the input.
+Write in ${langName(lang)}. Never ask for, guess or repeat Aadhaar digits, OTPs, passwords or other personal values. Captchas and OTPs are typed by the person themselves.`;
 
 function planSystem(lang) {
   return `You are the planning step inside an accessibility helper. It guides older people in India, many living with Parkinson's disease or low vision, through websites (often government health portals) one step at a time. The helper knows the verified steps of a few portals; you are asked for every other page. Work towards the person's goal if one is given.
@@ -125,6 +139,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         if (!o.aiFallback) throw new Error('The AI fallback is turned off.');
         const system = `You explain messages from Indian government health portals to older people. Be kind, short and concrete. Write in ${langName(msg.lang)}. Never ask for or mention Aadhaar digits, OTPs or personal details. If the message is a server problem, say it is not their mistake.`;
         const result = await callClaude({ apiKey: o.apiKey, system, user: `The portal showed this message (numbers removed): "${String(msg.text).slice(0, 400)}"`, schema: EXPLAIN_SCHEMA });
+        sendResponse({ ok: true, result });
+      } else if (msg.type === 'steady:explainField') {
+        // Input is masked by the content script (numbers and known personal values removed): label, placeholder, nearby text, host.
+        const o = await getKey();
+        if (!o.aiFallback) throw new Error('The AI fallback is turned off.');
+        const user = `Website: ${String(msg.host || '').slice(0, 80)}\nBox label: "${String(msg.label || '').slice(0, 120)}"\nPlaceholder: "${String(msg.placeholder || '').slice(0, 120)}"\nText near the box: "${String(msg.near || '').slice(0, 240)}"`;
+        const result = await callClaude({ apiKey: o.apiKey, system: fieldSystem(msg.lang), user, schema: FIELD_SCHEMA });
         sendResponse({ ok: true, result });
       } else if (msg.type === 'steady:test') {
         const apiKey = msg.apiKey || (await getKey()).apiKey;
